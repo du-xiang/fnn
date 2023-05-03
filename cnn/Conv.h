@@ -1,5 +1,5 @@
-/*
-* Author: ¶ÅÏé
+ï»¿/*
+* Author: æœç¥¥
 * 
 * Introduce: This header is used to implement the class of convolutional 
 *		layers in convolutional neural networks
@@ -9,7 +9,7 @@
 
 class Conv {
 public:
-	//	Èı¼¶¸¡µãÊıÖ¸ÕëÓÃÓÚ´æ·ÅÍ¼Æ¬¾ØÕó
+	//	ä¸‰çº§æµ®ç‚¹æ•°æŒ‡é’ˆç”¨äºå­˜æ”¾å›¾ç‰‡çŸ©é˜µ
 	float*** run(float*** imgs) {
 		float*** imgs;
 
