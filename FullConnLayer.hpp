@@ -30,28 +30,31 @@ public:
 
 FullConnLayer::FullConnLayer() {
 	m_node_num = 0;
+	prev = nullptr;
+	next = nullptr;
 
-	std::cout << "当前网络层未设置参数！！！" << std::endl;
+	std::cout << "警告：当前网络层需进行参数设置" << std::endl;
 }
 
-FullConnLayer::FullConnLayer(int n) {
-	m_node_num = n;
-
-	m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n));		// 申请 n*1 空间
-	m_output = std::vector<double>(n);
+FullConnLayer::FullConnLayer(int n) : m_node_num(n), prev(nullptr), next(nullptr) {
+	//m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n, 0.5));// 申请1*n 空间
+																				// 为使空间连续
+																				// 将n*1 变为1*n
+	//m_output = std::vector<double>(n, 0.5);
 }
 
-FullConnLayer::FullConnLayer(int n, FullConnLayer* front_layer) {
-	int front_node_num = front_layer->get_node_num();
-	m_node_num = n;
-
-	m_weight = std::vector<std::vector<double>>(n,
-		std::vector<double>(front_node_num));	// 申请 front_node_num*n 空间
-	m_output = std::vector<double>(n);
-
+FullConnLayer::FullConnLayer(int n, FullConnLayer* front_layer) : m_node_num(n), prev(nullptr) {
 	//	两层之间链路连接
-	front_layer->next = this;
-	this->prev = front_layer;
+	if (front_layer)
+	{
+		front_layer->next = this;
+	}
+
+	//int front_node_num = front_layer->get_node_num();
+
+	//m_weight = std::vector<std::vector<double>>(n,
+	//std::vector<double>(front_node_num, 0.5));	// 申请n*front_node_num 权重参数空间
+	//m_output = std::vector<double>(n, 0.5);			// 申请n 结果内存空间
 }
 
 int FullConnLayer::set_node_num(int n) {
@@ -78,15 +81,14 @@ std::vector<double> FullConnLayer::forward(double (*active_func)(const double& x
 }
 
 void FullConnLayer::display() {
-	std::cout << "本层结点数量：" << this->m_node_num << std::endl;			// 打印各层结点数量
-
-	std::cout << "与上一层间的权重参数：" << std::endl;
-	for (int i = 0; i < m_weight.size(); i++) {			// 打印各层间的权重参数
-		for (int j = 0; j < m_weight[i].size(); j++) {
-			std::cout << m_weight[i][j] << '\t';
-		}
-		std::cout << std::endl;
-	}
+	std::cout << "本层结点数量：" << get_node_num() << std::endl;			// 打印各层结点数量
+	//std::cout << "与上一层间的权重参数：" << std::endl;
+	//for (int i = 0; i < m_weight.size(); i++) {			// 打印各层间的权重参数
+	//	for (int j = 0; j < m_weight[i].size(); j++) {
+	//		std::cout << m_weight[i][j] << '\t';
+	//	}
+	//	std::cout << std::endl;
+	//}
 
 	std::cout << std::endl;
 }

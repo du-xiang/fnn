@@ -13,17 +13,14 @@ public:
 	FullConnLayer output;
 
 	FullConnNN();
-
 	int weight_init();
 	int forward();
 	void display();
 };
 
-FullConnNN::FullConnNN()
+FullConnNN::FullConnNN() : input(2), hidden_1(3, &input), output(2, &hidden_1)
 {
-	FullConnLayer input(5);
-	FullConnLayer hidden_1(4, &input);
-	FullConnLayer output(3, &hidden_1);
+
 }
 
 int FullConnNN::weight_init()

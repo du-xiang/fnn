@@ -4,9 +4,9 @@
 
 int main()
 {
-	FullConnNN* l = new FullConnNN();
-	l->weight_init();
-	l->display();
+	FullConnNN* example = new FullConnNN();
+	// example->weight_init();
+	example->display();
 
 	return 0;
 }
