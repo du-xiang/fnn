@@ -13,12 +13,12 @@ private:
 
 
 public:
-	std::weak_ptr<FullConnLayer> prev;
-	std::shared_ptr<FullConnLayer> next;
+	FullConnLayer* prev;
+	FullConnLayer* next;
 
 	FullConnLayer();
 	FullConnLayer(int n);
-	FullConnLayer(int n, const std::shared_ptr<FullConnLayer> front_layer);
+	FullConnLayer(int n, FullConnLayer* front_layer);
 	//~FullConnLayer();
 
 	int set_node_num(int n);
@@ -31,7 +31,7 @@ public:
 FullConnLayer::FullConnLayer() {
 	m_node_num = 0;
 
-	std::cout << "当前网络层为设置参数！！！" << std::endl;
+	std::cout << "当前网络层未设置参数！！！" << std::endl;
 }
 
 FullConnLayer::FullConnLayer(int n) {
@@ -41,7 +41,7 @@ FullConnLayer::FullConnLayer(int n) {
 	m_output = std::vector<double>(n);
 }
 
-FullConnLayer::FullConnLayer(int n, const std::shared_ptr<FullConnLayer> front_layer) {
+FullConnLayer::FullConnLayer(int n, FullConnLayer* front_layer) {
 	int front_node_num = front_layer->get_node_num();
 	m_node_num = n;
 
@@ -50,7 +50,7 @@ FullConnLayer::FullConnLayer(int n, const std::shared_ptr<FullConnLayer> front_l
 	m_output = std::vector<double>(n);
 
 	//	两层之间链路连接
-	front_layer->next = std::shared_ptr<FullConnLayer>(this);
+	front_layer->next = this;
 	this->prev = front_layer;
 }
 

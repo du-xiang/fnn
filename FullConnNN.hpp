@@ -4,14 +4,13 @@
 #include<iostream>
 
 #include "FullConnLayer.hpp"
-#include "util.cpp"
 
 class FullConnNN {
 private:
 public:
-	std::shared_ptr<FullConnLayer> input;
-	std::shared_ptr<FullConnLayer> hidden_1;
-	std::shared_ptr<FullConnLayer> output;
+	FullConnLayer input;
+	FullConnLayer hidden_1;
+	FullConnLayer output;
 
 	FullConnNN();
 
@@ -22,14 +21,14 @@ public:
 
 FullConnNN::FullConnNN()
 {
-	input = std::make_shared<FullConnLayer>(5);
-	hidden_1 = std::make_shared<FullConnLayer>(4, input);
-	output = std::make_shared<FullConnLayer>(3, hidden_1);
+	FullConnLayer input(5);
+	FullConnLayer hidden_1(4, &input);
+	FullConnLayer output(3, &hidden_1);
 }
 
 int FullConnNN::weight_init()
 {
-	std::shared_ptr<FullConnLayer> tmp_Layer(input);
+	FullConnLayer* tmp_Layer = &input;
 
 	while (tmp_Layer != nullptr)
 	{
@@ -49,7 +48,7 @@ int FullConnNN::forward()
 
 void FullConnNN::display()
 {
-	std::shared_ptr<FullConnLayer> tmp_Layer(input);
+	FullConnLayer* tmp_Layer = &input;
 
 	std::cout << "Network structure detail information display:" << std::endl;
 
