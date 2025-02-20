@@ -40,6 +40,15 @@ int FullConnNN::weight_init()
 
 int FullConnNN::forward()
 {
+	std::cout << "————开始进行推理过程————" << std::endl;
+	FullConnLayer* tmpLayer = &input;
+
+	while (tmpLayer)
+	{
+		tmpLayer->forward();
+		tmpLayer = tmpLayer->next;
+	}
+
 	return 1;
 }
 
@@ -47,7 +56,7 @@ void FullConnNN::display()
 {
 	FullConnLayer* tmp_Layer = &input;
 
-	std::cout << "Network structure detail information display:" << std::endl;
+	std::cout << "网络结构细节信息展示：" << std::endl;
 
 	while (tmp_Layer != nullptr)
 	{
