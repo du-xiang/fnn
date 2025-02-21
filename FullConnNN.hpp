@@ -14,7 +14,7 @@ public:
 
 	FullConnNN();
 	int weight_init();
-	int forward();
+	int forward(std::vector<double> in);
 	void display();
 };
 
@@ -38,10 +38,13 @@ int FullConnNN::weight_init()
 	return 1;
 }
 
-int FullConnNN::forward()
+int FullConnNN::forward(std::vector<double> in)
 {
 	std::cout << "————开始进行推理过程————" << std::endl;
 	FullConnLayer* tmpLayer = &input;
+
+	// 输入层单独计算
+	tmpLayer->forward(in);
 
 	while (tmpLayer)
 	{
