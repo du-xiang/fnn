@@ -7,7 +7,8 @@
 
 class FullConnLayer {
 private:
-	unsigned int m_node_num;
+	unsigned int m_node_num;		// 当前网络层的结点数量
+	unsigned int m_current_layer;	// 当前网络层所在的层数
 	std::vector<std::vector<double>> m_weight;
 
 
@@ -23,6 +24,8 @@ public:
 
 	int set_node_num(unsigned int n);
 	unsigned int get_node_num() const;
+	int set_current_layer(unsigned int n);
+	unsigned int get_current_layer() const;
 	int weight_init();
 	int forward();
 	int forward(std::vector<double>);
@@ -37,7 +40,8 @@ FullConnLayer::FullConnLayer() {
 	std::cout << "警告：当前网络层需进行参数设置" << std::endl;
 }
 
-FullConnLayer::FullConnLayer(unsigned int n) : m_node_num(n), prev(nullptr), next(nullptr) {
+FullConnLayer::FullConnLayer(unsigned int n) : m_node_num(n), m_current_layer(1) , 
+											prev(nullptr), next(nullptr) {
 	m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n));	// 申请1*n 空间
 																			// 为使空间连续
 																			// 将n*1 变为1*n
@@ -52,6 +56,11 @@ FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : m_nod
 	{
 		front_layer->next = this;
 		this->prev = front_layer;
+
+		if (front_layer->get_current_layer())
+		{
+			set_current_layer(front_layer->get_current_layer() + 1);
+		}
 
 		front_node_num = front_layer->get_node_num();
 
@@ -72,6 +81,15 @@ int FullConnLayer::set_node_num(unsigned int n) {
 
 unsigned int FullConnLayer::get_node_num() const {
 	return m_node_num;
+}
+
+int FullConnLayer::set_current_layer(unsigned int n) {
+	m_current_layer = n;
+	return 1;
+}
+
+unsigned int FullConnLayer::get_current_layer() const {
+	return m_current_layer;
 }
 
 
@@ -97,7 +115,7 @@ int FullConnLayer::forward() {
 			layerOutput[i] = 1.0 / (1.0 + exp(-tmpOutput));
 		}
 
-		std::cout << "本层输出：";
+		std::cout << "第" << get_current_layer() << "层输出：";
 		for (unsigned int i = 0; i < m_node_num; i++)
 			std::cout << layerOutput[i] << '\t';
 		std::cout << std::endl;
@@ -117,7 +135,7 @@ int FullConnLayer::forward(std::vector<double> in)
 		std::cout << "-错误-：输入数据与输出层结点数不匹配" << std::endl;
 	}
 
-	std::cout << "本层输出：";
+	std::cout << "第" << get_current_layer() << "层输出：";
 	for (unsigned int i = 0; i < m_node_num; i++)
 		std::cout << layerOutput[i] << '\t';
 	std::cout << std::endl;
@@ -126,7 +144,7 @@ int FullConnLayer::forward(std::vector<double> in)
 }
 
 void FullConnLayer::display() {
-	std::cout << "本层结点数量：" << get_node_num() << std::endl;			// 打印各层结点数量
+	std::cout << "第" << get_current_layer() << "层结点数量：" << get_node_num() << std::endl;			// 打印各层结点数量
 	std::cout << "与上一层间的权重参数：" << std::endl;
 	for (unsigned int i = 0; i < m_weight.size(); i++) {			// 打印各层间的权重参数
 		for (unsigned int j = 0; j < m_weight[i].size(); j++) {
