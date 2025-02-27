@@ -44,7 +44,8 @@ int FullConnNN::forward(std::vector<double> in)
 	FullConnLayer* tmpLayer = &input;
 
 	// ÊäÈë²ãµ¥¶À¼ÆËã
-	tmpLayer->forward(in);
+	if(tmpLayer->forward(in) != 1)
+		return -1;
 
 	while (tmpLayer)
 	{

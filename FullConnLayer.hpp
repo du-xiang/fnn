@@ -124,6 +124,8 @@ int FullConnLayer::forward() {
 	return 1;
 }
 
+// 作用于神经网络输入层
+// 用于接收数据
 int FullConnLayer::forward(std::vector<double> in)
 {
 	if (layerOutput.size() == in.size())
@@ -133,6 +135,7 @@ int FullConnLayer::forward(std::vector<double> in)
 	else
 	{
 		std::cout << "-错误-：输入数据与输出层结点数不匹配" << std::endl;
+		return -1;
 	}
 
 	std::cout << "第" << get_current_layer() << "层输出：";
