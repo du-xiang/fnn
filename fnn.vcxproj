@@ -26,6 +26,9 @@
     <ClInclude Include="FullConnLayer.hpp" />
     <ClInclude Include="FullConnNN.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
