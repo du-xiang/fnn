@@ -351,6 +351,6 @@ MigrationBackup/
 
 # ºöÂÔvisual studioÅäÖÃÎÄ¼ş
 .sln
-.vcproj
+.vcxproj
 .filters
 .user
