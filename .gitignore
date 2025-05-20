@@ -350,7 +350,7 @@ MigrationBackup/
 .ionide/
 
 # ºöÂÔvisual studioÅäÖÃÎÄ¼ş
-.sln
-.vcxproj
-.filters
-.user
+fnn.sln
+fnn.vcxproj
+fnn.vcxproj.filters
+fnn.vcxproj.user
