@@ -10,6 +10,6 @@ LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning
 ## 数据集预处理
 为了避免在代码中使用多余的库来对图片进行处理，所以提前将图片文件处理为文本文件（TXT）。
 
-数据集总共包含两个文件：train_1.txt、train_1.txt和 test.txt。其中train_1.txt、train_1.txt为训练集，由于 GitHub 文件大小限制在100M，所以切割为两个文件，test.txt 为测试集。
+数据集总共包含两个文件：train和 test.txt。其中train.txt为训练集，test.txt 为测试集。
 
 文件内每行为一组数据，共785个数据值，使用空格隔开。每组第一个数值为改组图片显示的数字，结果为0-9。剩下784个数值为图片转换后的数值。数值内容为图片像素点的灰度值，顺序为图片文件按行顺序读取。

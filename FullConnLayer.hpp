@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <cmath>
 
 
 class FullConnLayer {
@@ -34,6 +35,7 @@ public:
 
 FullConnLayer::FullConnLayer() {
 	m_node_num = 0;
+	m_current_layer = 0;
 	prev = nullptr;
 	next = nullptr;
 
@@ -66,7 +68,7 @@ FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : m_nod
 
 		m_weight = std::vector<std::vector<double>>(n,
 			std::vector<double>(front_node_num+1, 0.5));	// 申请n*(front_node_num+1) 权重参数空间
-		layerOutput = std::vector<double>(n, 0.0);				// 申请n 结果内存空间
+		layerOutput = std::vector<double>(n, 0.0);			// 申请n 结果内存空间
 	}
 	else
 	{

@@ -15,6 +15,7 @@ public:
 	FullConnNN();
 	int weight_init();
 	int forward(std::vector<double> in);
+	int backward();
 	void display();
 };
 
@@ -54,6 +55,18 @@ int FullConnNN::forward(std::vector<double> in)
 	}
 
 	return 1;
+}
+
+int FullConnNN::backward() 
+{
+	std::cout << "————开始进行训练————" << std::endl;
+	double learningStep = 0.01;			// 设置训练步长
+	unsigned int epoch = 1;				// 设置训练轮数
+
+	for (unsigned int e = 1; e <= epoch; e++)
+	{
+
+	}
 }
 
 void FullConnNN::display()
