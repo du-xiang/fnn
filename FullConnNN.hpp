@@ -65,8 +65,19 @@ int FullConnNN::backward()
 
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
+		std::vector<double> in(2, 10);
+		this->forward(in);
 
+		FullConnLayer* tmp = &output;
+		while (tmp->prev)
+		{
+			
+
+			tmp = tmp->prev;
+		}
 	}
+
+	return 0;
 }
 
 void FullConnNN::display()
