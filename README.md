@@ -2,7 +2,7 @@
 从零开始编写一个全连接神经网络，并进行优化。试试看可以将性能优化到什么程度。
 
 ## 数据集
-本项目使用[MINIST数据集](https://yann.lecun.com/exdb/mnist/)。MNIST 数据集由 Yann LeCun、Léon Bottou、Yoshua Bengio 和 Patrick Haffner 提供。它最初发表于以下论文：
+本项目使用[MNIST数据集](https://yann.lecun.com/exdb/mnist/)。MNIST 数据集由 Yann LeCun、Léon Bottou、Yoshua Bengio 和 Patrick Haffner 提供。它最初发表于以下论文：
 LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning applied to document recognition. Proceedings of the IEEE, 86(11), 2278-2324.
 
 这是一个广泛用于机器学习和计算机视觉领域的手写数字图像数据集。MNIST 数据集包含 60,000 张训练图像和 10,000 张测试图像，每张图像为 28x28 像素的灰度图像，标注了对应的数字类别（0-9）。

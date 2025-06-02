@@ -354,3 +354,6 @@ fnn.sln
 fnn.vcxproj
 fnn.vcxproj.filters
 fnn.vcxproj.user
+
+# ºöÂÔ build ÎÄ¼ş¼Ğ
+build/
