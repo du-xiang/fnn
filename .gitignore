@@ -349,11 +349,14 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# ºöÂÔvisual studioÅäÖÃÎÄ¼ş
+# ï¿½ï¿½ï¿½ï¿½visual studioï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 fnn.sln
 fnn.vcxproj
 fnn.vcxproj.filters
 fnn.vcxproj.user
 
-# ºöÂÔ build ÎÄ¼ş¼Ğ
+# ï¿½ï¿½ï¿½ï¿½ build ï¿½Ä¼ï¿½ï¿½ï¿½
 build/
+
+# ignore database(The file is larger than 100M and cannot be uploaded.)
+dataset/mnist/
