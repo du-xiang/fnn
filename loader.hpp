@@ -1,28 +1,27 @@
-#ifndef Loader.H
-#define Loader.H
+#ifndef Loader_H
+#define Loader_H
 
 #include <fstream>
 #include <vector>
 #include <sstream>
 #include <string>
 
-// ¶¨ÒåÒ»¸ö½á¹¹ÌåÓÃÓÚ´æ´¢Êı¾İ¼¯Ñù±¾µÄÖµÓëÄÚÈİ
+// å®šä¹‰ä¸€ä¸ªç»“æ„ä½“ç”¨äºå­˜å‚¨æ•°æ®é›†æ ·æœ¬çš„å€¼ä¸å†…å®¹
 struct sample
 {
 	unsigned int value;
 	std::vector<double> img;
 };
 
-class Loader()
+class Loader
 {
 private:
-	std::ifstream file;  // ÎÄ¼şÁ÷
-	std::string line;    // ÓÃÓÚ´æ´¢µ±Ç°¶ÁÈ¡µÄĞĞ
-	bool endOfFile;      // ±ê¼ÇÊÇ·ñµ½´ïÎÄ¼şÄ©Î²
+	std::ifstream file;  // æ–‡ä»¶æµ
+	std::string line;    // ç”¨äºå­˜å‚¨å½“å‰è¯»å–çš„è¡Œ
+	bool endOfFile;      // æ ‡è®°æ˜¯å¦åˆ°è¾¾æ–‡ä»¶æœ«å°¾
 
 public:
 
-}
+};
 
-#endif // ! Loader.H
-
+#endif // ! Loader_H

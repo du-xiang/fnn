@@ -8,8 +8,8 @@
 
 class FullConnLayer {
 private:
-	unsigned int m_node_num;		// µ±Ç°ÍøÂç²ãµÄ½áµãÊıÁ¿
-	unsigned int m_current_layer;	// µ±Ç°ÍøÂç²ãËùÔÚµÄ²ãÊı
+	unsigned int m_node_num;		// å½“å‰ç½‘ç»œå±‚çš„ç»“ç‚¹æ•°é‡
+	unsigned int m_current_layer;	// å½“å‰ç½‘ç»œå±‚æ‰€åœ¨çš„å±‚æ•°
 	std::vector<std::vector<double>> m_weight;
 
 
@@ -18,9 +18,9 @@ public:
 	FullConnLayer* next;
 	std::vector<double> layerOutput;
 
-	FullConnLayer();
-	FullConnLayer(unsigned int n);
-	FullConnLayer(unsigned int n, FullConnLayer* front_layer);
+	FullConnLayer() = delete;	// ä¸å…è®¸æ— å‚(ä¸å£°æ˜å½“å‰å±‚èŠ‚ç‚¹æ•°)æ„é€ 
+	FullConnLayer(unsigned int n);								// è¾“å…¥å±‚
+	FullConnLayer(unsigned int n, FullConnLayer* front_layer);	// ä¸­é—´+è¾“å‡ºå±‚
 	//~FullConnLayer();
 
 	int set_node_num(unsigned int n);
@@ -33,27 +33,34 @@ public:
 	void display();
 };
 
-FullConnLayer::FullConnLayer() {
+FullConnLayer::FullConnLayer() 
+{
 	m_node_num = 0;
 	m_current_layer = 0;
 	prev = nullptr;
 	next = nullptr;
 
-	std::cout << "¾¯¸æ£ºµ±Ç°ÍøÂç²ãĞè½øĞĞ²ÎÊıÉèÖÃ" << std::endl;
+	std::cout << "è­¦å‘Šï¼šå½“å‰ç½‘ç»œå±‚éœ€è¿›è¡Œå‚æ•°è®¾ç½®" << std::endl;
 }
 
-FullConnLayer::FullConnLayer(unsigned int n) : m_node_num(n), m_current_layer(1) , 
-											prev(nullptr), next(nullptr) {
-	m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n));	// ÉêÇë1*n ¿Õ¼ä
-																			// ÎªÊ¹¿Õ¼äÁ¬Ğø
-																			// ½«n*1 ±äÎª1*n
+FullConnLayer::FullConnLayer(unsigned int n) : 
+	m_node_num(n), 
+	m_current_layer(1) , 
+	prev(nullptr),
+	next(nullptr) 
+{
+	m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n));	// ç”³è¯·1*n ç©ºé—´
+																			// ä¸ºä½¿ç©ºé—´è¿ç»­
+																			// å°†n*1 å˜ä¸º1*n
 	layerOutput = std::vector<double>(n, 1.0);
 }
 
-FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : m_node_num(n) {
+FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : 
+	m_node_num(n) 
+{
 	unsigned int front_node_num;
 
-	//	Á½²ãÖ®¼äÁ´Â·Á¬½Ó
+	//	ä¸¤å±‚ä¹‹é—´é“¾è·¯è¿æ¥
 	if (front_layer)
 	{
 		front_layer->next = this;
@@ -67,57 +74,56 @@ FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : m_nod
 		front_node_num = front_layer->get_node_num();
 
 		m_weight = std::vector<std::vector<double>>(n,
-			std::vector<double>(front_node_num+1, 0.5));	// ÉêÇën*(front_node_num+1) È¨ÖØ²ÎÊı¿Õ¼ä
-		layerOutput = std::vector<double>(n, 0.0);			// ÉêÇën ½á¹ûÄÚ´æ¿Õ¼ä
+			std::vector<double>(front_node_num+1, 0.5));	// ç”³è¯·n*(front_node_num+1) æƒé‡å‚æ•°ç©ºé—´
+		layerOutput = std::vector<double>(n, 0.0);			// ç”³è¯·n ç»“æœå†…å­˜ç©ºé—´
 	}
 	else
 	{
-		std::cout << "´íÎó£ºFullConnLayer ´«ÈëµÄfront_layer ²ÎÊıÎªnullptr" << std::endl;
+		std::cout << "é”™è¯¯: FullConnLayer ä¼ å…¥çš„front_layer å‚æ•°ä¸ºnullptr" << std::endl;
 	}
 }
 
-int FullConnLayer::set_node_num(unsigned int n) {
+int FullConnLayer::set_node_num(unsigned int n) 
+{
 	m_node_num = n;
 	return 1;
 }
 
-unsigned int FullConnLayer::get_node_num() const {
-	return m_node_num;
-}
+unsigned int FullConnLayer::get_node_num() const 
+{ return m_node_num;}
 
-int FullConnLayer::set_current_layer(unsigned int n) {
+int FullConnLayer::set_current_layer(unsigned int n) 
+{
 	m_current_layer = n;
 	return 1;
 }
 
-unsigned int FullConnLayer::get_current_layer() const {
-	return m_current_layer;
-}
+unsigned int FullConnLayer::get_current_layer() const 
+{ return m_current_layer;}
 
 
-int FullConnLayer::weight_init() {
-	return 1;
-}
+int FullConnLayer::weight_init() 
+{ return 1;}
 
 int FullConnLayer::forward() {
-	double tmpOutput;			// ÓÃÓÚ´æ´¢¼ÆËã¹ı³Ì²úÉúµÄÖĞ¼äÖµ
-								// Ê¹µÃ¼ÆËã²¿·Ö´úÂë¸üÃÀ¹Û
+	double tmpOutput;			// ç”¨äºå­˜å‚¨è®¡ç®—è¿‡ç¨‹äº§ç”Ÿçš„ä¸­é—´å€¼
+								// ä½¿å¾—è®¡ç®—éƒ¨åˆ†ä»£ç æ›´ç¾è§‚
 	if (this->prev)
 	{
 		for (unsigned int i = 0; i < m_node_num; i++) 
 		{
 			tmpOutput = m_weight[i][0];
-			// ¼ÆËã¹«Ê½ w_nx_n +¡¤¡¤¡¤¡¤+ w_3x_3 + w_2x_2 + w_1x_1 + w0
+			// è®¡ç®—å…¬å¼ w_nx_n +Â·Â·Â·Â·+ w_3x_3 + w_2x_2 + w_1x_1 + w0
 			for (unsigned int j = 0; j < this->prev->get_node_num(); j++)
 			{
 				tmpOutput += m_weight[i][j+1] * this->prev->layerOutput[j];
 			}
 
-			// Ê¹ÓÃsigmoid º¯Êı
+			// ä½¿ç”¨sigmoid å‡½æ•°
 			layerOutput[i] = 1.0 / (1.0 + exp(-tmpOutput));
 		}
 
-		std::cout << "µÚ" << get_current_layer() << "²ãÊä³ö£º";
+		std::cout << "ç¬¬" << get_current_layer() << "å±‚è¾“å‡ºï¼š";
 		for (unsigned int i = 0; i < m_node_num; i++)
 			std::cout << layerOutput[i] << '\t';
 		std::cout << std::endl;
@@ -126,8 +132,8 @@ int FullConnLayer::forward() {
 	return 1;
 }
 
-// ×÷ÓÃÓÚÉñ¾­ÍøÂçÊäÈë²ã
-// ÓÃÓÚ½ÓÊÕÊı¾İ
+// ä½œç”¨äºç¥ç»ç½‘ç»œè¾“å…¥å±‚
+// ç”¨äºæ¥æ”¶æ•°æ®
 int FullConnLayer::forward(std::vector<double> in)
 {
 	if (layerOutput.size() == in.size())
@@ -136,11 +142,11 @@ int FullConnLayer::forward(std::vector<double> in)
 	}
 	else
 	{
-		std::cout << "-´íÎó-£ºÊäÈëÊı¾İÓëÊä³ö²ã½áµãÊı²»Æ¥Åä" << std::endl;
+		std::cout << "-é”™è¯¯-ï¼šè¾“å…¥æ•°æ®ä¸è¾“å‡ºå±‚ç»“ç‚¹æ•°ä¸åŒ¹é…" << std::endl;
 		return -1;
 	}
 
-	std::cout << "µÚ" << get_current_layer() << "²ãÊä³ö£º";
+	std::cout << "ç¬¬" << get_current_layer() << "å±‚è¾“å‡ºï¼š";
 	for (unsigned int i = 0; i < m_node_num; i++)
 		std::cout << layerOutput[i] << '\t';
 	std::cout << std::endl;
@@ -148,10 +154,11 @@ int FullConnLayer::forward(std::vector<double> in)
 	return 1;
 }
 
-void FullConnLayer::display() {
-	std::cout << "µÚ" << get_current_layer() << "²ã½áµãÊıÁ¿£º" << get_node_num() << std::endl;			// ´òÓ¡¸÷²ã½áµãÊıÁ¿
-	std::cout << "ÓëÉÏÒ»²ã¼äµÄÈ¨ÖØ²ÎÊı£º" << std::endl;
-	for (unsigned int i = 0; i < m_weight.size(); i++) {			// ´òÓ¡¸÷²ã¼äµÄÈ¨ÖØ²ÎÊı
+void FullConnLayer::display() 
+{
+	std::cout << "ç¬¬" << get_current_layer() << "å±‚ç»“ç‚¹æ•°é‡ï¼š" << get_node_num() << std::endl;			// æ‰“å°å„å±‚ç»“ç‚¹æ•°é‡
+	std::cout << "ä¸ä¸Šä¸€å±‚é—´çš„æƒé‡å‚æ•°ï¼š" << std::endl;
+	for (unsigned int i = 0; i < m_weight.size(); i++) {			// æ‰“å°å„å±‚é—´çš„æƒé‡å‚æ•°
 		for (unsigned int j = 0; j < m_weight[i].size(); j++) {
 			std::cout << m_weight[i][j] << '\t';
 		}

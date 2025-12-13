@@ -5,7 +5,8 @@
 
 #include "FullConnLayer.hpp"
 
-class FullConnNN {
+class FullConnNN 
+{
 private:
 public:
 	FullConnLayer input;
@@ -19,10 +20,11 @@ public:
 	void display();
 };
 
-FullConnNN::FullConnNN() : input(2), hidden_1(3, &input), output(2, &hidden_1)
-{
-
-}
+FullConnNN::FullConnNN() : 
+	input(2), 
+	hidden_1(3, &input), 
+	output(2, &hidden_1)
+{ }
 
 int FullConnNN::weight_init()
 {
@@ -34,17 +36,17 @@ int FullConnNN::weight_init()
 		tmp_Layer = tmp_Layer->next;
 	}
 
-	std::cout << "ÍøÂç³õÊ¼»¯Íê³É" << std::endl;
+	std::cout << "ç½‘ç»œåˆå§‹åŒ–å®Œæˆ" << std::endl;
 
 	return 1;
 }
 
 int FullConnNN::forward(std::vector<double> in)
 {
-	std::cout << "¡ª¡ª¡ª¡ª¿ªÊ¼½øÐÐÍÆÀí¹ý³Ì¡ª¡ª¡ª¡ª" << std::endl;
+	std::cout << "â€”â€”â€”â€”å¼€å§‹è¿›è¡ŒæŽ¨ç†è¿‡ç¨‹â€”â€”â€”â€”" << std::endl;
 	FullConnLayer* tmpLayer = &input;
 
-	// ÊäÈë²ãµ¥¶À¼ÆËã
+	// è¾“å…¥å±‚å•ç‹¬è®¡ç®—
 	if(tmpLayer->forward(in) != 1)
 		return -1;
 
@@ -59,9 +61,9 @@ int FullConnNN::forward(std::vector<double> in)
 
 int FullConnNN::backward() 
 {
-	std::cout << "¡ª¡ª¡ª¡ª¿ªÊ¼½øÐÐÑµÁ·¡ª¡ª¡ª¡ª" << std::endl;
-	double learningStep = 0.01;			// ÉèÖÃÑµÁ·²½³¤
-	unsigned int epoch = 1;				// ÉèÖÃÑµÁ·ÂÖÊý
+	std::cout << "â€”â€”â€”â€”å¼€å§‹è¿›è¡Œè®­ç»ƒâ€”â€”â€”â€”" << std::endl;
+	double learningStep = 0.01;			// è®¾ç½®è®­ç»ƒæ­¥é•¿
+	unsigned int epoch = 1;				// è®¾ç½®è®­ç»ƒè½®æ•°
 
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
@@ -84,7 +86,7 @@ void FullConnNN::display()
 {
 	FullConnLayer* tmp_Layer = &input;
 
-	std::cout << "ÍøÂç½á¹¹Ï¸½ÚÐÅÏ¢Õ¹Ê¾£º" << std::endl;
+	std::cout << "ç½‘ç»œç»“æž„ç»†èŠ‚ä¿¡æ¯å±•ç¤ºï¼š" << std::endl;
 
 	while (tmp_Layer != nullptr)
 	{
