@@ -9,7 +9,7 @@ FullConnLayer::FullConnLayer(unsigned int n) :
 	prev(nullptr),
 	next(nullptr) 
 {
-	m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n));	// 申请1*n 空间
+	m_weight = std::vector<std::vector<double>>(1, std::vector<double>(n, 0.5));	// 申请1*n 空间
 																			// 为使空间连续
 																			// 将n*1 变为1*n
 	layerOutput = std::vector<double>(n, 1.0);
@@ -86,7 +86,7 @@ int FullConnLayer::forward() {
 			layerOutput[i] = 1.0 / (1.0 + exp(-tmpOutput));
 		}
 
-		std::cout << "No," << get_current_layer() << " layer output: ";
+		std::cout << "No." << get_current_layer() << " layer output: ";
 		for (unsigned int i = 0; i < m_node_num; i++)
 			std::cout << layerOutput[i] << '\t';
 		std::cout << std::endl;
@@ -105,7 +105,7 @@ int FullConnLayer::forward(std::vector<double> in)
 	}
 	else
 	{
-		std::cout << "- Error - : The input data does not match the number of nodes in the output layer" << std::endl;
+		std::cout << "Error: The input data does not match the number of nodes in the output layer" << std::endl;
 		return -1;
 	}
 

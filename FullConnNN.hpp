@@ -43,7 +43,7 @@ int FullConnNN::weight_init()
 
 int FullConnNN::forward(std::vector<double> in)
 {
-	std::cout << "———— begins the reasoning process ————" << std::endl;
+	std::cout << "** begins the reasoning process ** " << std::endl;
 	FullConnLayer* tmpLayer = &input;
 
 	// 输入层单独计算
@@ -61,7 +61,7 @@ int FullConnNN::forward(std::vector<double> in)
 
 int FullConnNN::backward() 
 {
-	std::cout << "———— begins training ————" << std::endl;
+	std::cout << "** begins training **" << std::endl;
 	double learningStep = 0.01;			// 设置训练步长
 	unsigned int epoch = 1;				// 设置训练轮数
 
