@@ -8,9 +8,9 @@ int main()
 	// example->weight_init();
 	example->display();
 
-	std::vector<double> in(2, 10);
-	example->forward(in);
-	// example->backward();
+	//std::vector<double> in(2, 10);
+	//example->forward(in);
+	//example->backward();
 
 	return 0;
 }

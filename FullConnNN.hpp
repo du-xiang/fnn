@@ -36,14 +36,14 @@ int FullConnNN::weight_init()
 		tmp_Layer = tmp_Layer->next;
 	}
 
-	std::cout << "网络初始化完成" << std::endl;
+	std::cout << "The network initialization is complete" << std::endl;
 
 	return 1;
 }
 
 int FullConnNN::forward(std::vector<double> in)
 {
-	std::cout << "————开始进行推理过程————" << std::endl;
+	std::cout << "———— begins the reasoning process ————" << std::endl;
 	FullConnLayer* tmpLayer = &input;
 
 	// 输入层单独计算
@@ -61,7 +61,7 @@ int FullConnNN::forward(std::vector<double> in)
 
 int FullConnNN::backward() 
 {
-	std::cout << "————开始进行训练————" << std::endl;
+	std::cout << "———— begins training ————" << std::endl;
 	double learningStep = 0.01;			// 设置训练步长
 	unsigned int epoch = 1;				// 设置训练轮数
 
@@ -86,7 +86,7 @@ void FullConnNN::display()
 {
 	FullConnLayer* tmp_Layer = &input;
 
-	std::cout << "网络结构细节信息展示：" << std::endl;
+	std::cout << "\n** Display of detailed information on network structure: \n" << std::endl;
 
 	while (tmp_Layer != nullptr)
 	{
