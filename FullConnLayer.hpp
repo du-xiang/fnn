@@ -45,6 +45,8 @@ FullConnLayer::FullConnLayer(unsigned int n) :
 	layerOutput = std::vector<double>(n, 1.0);
 }
 
+// 修改外部数据：front_layer
+// 获取外部数据：front_layer
 FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : 
 	m_node_num(n) 
 {

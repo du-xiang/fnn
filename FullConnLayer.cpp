@@ -6,6 +6,7 @@
 int FullConnLayer::weight_init() 
 { return 1;}
 
+// 获取外部数据：front_layer
 int FullConnLayer::forward() {
 	double tmpOutput;			// 用于存储计算过程产生的中间值
 								// 使得计算部分代码更美观
