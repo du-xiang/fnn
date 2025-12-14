@@ -10,7 +10,7 @@ int main()
 
 	std::vector<double> in(2, 10);
 	example->forward(in);
-	example->backward();
+	// example->backward();
 
 	return 0;
 }

@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.10)
 project(fnn CXX)
 
 # 添加源文件
-add_executable(fnn main.cpp)
+add_executable(fnn main.cpp FullConnLayer.cpp)
 
 # 指定包含目录，确保头文件可以被正确找到
 target_include_directories(fnn PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
