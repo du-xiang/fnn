@@ -11,6 +11,7 @@ project(fnn CXX)
 add_executable( fnn 
                 main.cpp 
                 FullConnLayer.cpp
+                FullConnNN.cpp
                 Util.cpp
               )
 
