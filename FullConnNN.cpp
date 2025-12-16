@@ -1,4 +1,5 @@
 #include "FullConnNN.hpp"
+#include "Loader.hpp"
 
 int FullConnNN::weight_init()
 {
@@ -36,19 +37,27 @@ int FullConnNN::forward(std::vector<double> in)
 int FullConnNN::backward() 
 {
 	std::cout << "** begins training **" << std::endl;
-	double learningStep = 0.01;				// 设置训练步长
-	unsigned int epoch = 10;				// 设置训练轮数
+	double learningStep = 0.01;			// 设置训练步长
+	unsigned int epoch = 1;				// 设置训练轮数
 
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
-		std::vector<double> in(2, 10);
-		this->forward(in);
+        Sample sample;
+		Loader loader("..\\datasets\\mnist\\train.txt");
+        
+        // 此部分需批次内按样本重复，以此为退出条件
+        loader.load(sample);
+
+		this->forward(sample.img);      // 代入训练样本
+                                        // 得到中间值
 
 		FullConnLayer* tmp = &output;
-		while (tmp->prev)
-		{
-			
+        tmp->backward(sample.value, learningStep);	// 输出层单独计算
+        tmp = tmp->prev;
 
+		while (tmp->prev)				// 退出条件：当前层为输入层
+		{
+			tmp->backward(learningStep);
 			tmp = tmp->prev;
 		}
 	}

@@ -8,7 +8,7 @@
 #include <stdexcept>
 
 // 定义一个结构体用于存储数据集样本的值与内容
-struct sample
+struct Sample
 {
 	unsigned int value;
 	std::vector<double> img;
@@ -23,7 +23,7 @@ public:
 	Loader() = delete;
 	explicit Loader(const std::string& filePath);
 	~Loader();
-	bool load(sample& s);
+	bool load(Sample& s);
 
 };
 
@@ -45,7 +45,7 @@ Loader::~Loader()
 	}
 }
 
-bool Loader::load(sample& s)
+bool Loader::load(Sample& s)
 {
 	std::string line;
 
