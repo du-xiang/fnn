@@ -8,6 +8,8 @@ double sigmoid(const double& x) {
 	return 1.0 / (1.0 + exp(-x));
 }
 
+// **********************************************
+// 进度条类成员函数实现
 ProgressBar::ProgressBar(std::size_t total, 
                 std::size_t barWidth = 50, 
                 std::string prefix   = "", 
@@ -37,3 +39,48 @@ void ProgressBar::update(std::size_t now)
     printf("] %zu/%zu %s", now, m_total, m_suffix.c_str());
     fflush(stdout);
 }
+
+
+// **********************************************
+// 计时器类成员函数实现
+Timer::Timer() noexcept
+{ reset();}
+
+void Timer::reset() noexcept
+{
+	m_start = std::chrono::steady_clock::now();
+    m_paused = false;
+    m_paused_sum = std::chrono::milliseconds{0};
+}
+
+void Timer::pause() noexcept
+{
+	if(!m_paused)
+    {
+        m_paused_sum += std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - m_start);
+        m_paused = true;
+    }
+}
+
+void Timer::resume() noexcept
+{
+    if(m_paused)
+    {
+        m_start = std::chrono::steady_clock::now();
+        m_paused = false;
+    }
+}
+
+long long Timer::elapsedTime() const noexcept
+{
+	auto extra = m_paused ? 
+		std::chrono::milliseconds{0}: 
+			std::chrono::duration_cast<std::chrono::milliseconds>(
+                            		std::chrono::steady_clock::now() - m_start);
+
+    return (m_paused_sum + extra).count();
+}
+
+bool Timer::isPause() const noexcept
+{ return m_paused;}

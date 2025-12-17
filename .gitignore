@@ -355,8 +355,11 @@ fnn.vcxproj
 fnn.vcxproj.filters
 fnn.vcxproj.user
 
-# ignore build dirctory
+# ignore build dirctory(Store the intermediate files generated during debugging during the development process)
 build/
 
 # ignore database(The file is larger than 100M and cannot be uploaded.)
 datasets/mnist/
+
+# ignore Log diretory(Store development logs and some ideas)
+log/
