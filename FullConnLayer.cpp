@@ -1,6 +1,7 @@
 #include<iostream>
 
-#include"FullConnLayer.hpp"
+#include "FullConnLayer.hpp"
+#include "Util.hpp"
 
 
 FullConnLayer::FullConnLayer(unsigned int n) : 
@@ -78,6 +79,8 @@ int FullConnLayer::forward() {
 								// 使得计算部分代码更美观
 	if (this->prev)
 	{
+		ProgressBar bar(m_node_num, 50, "progressing", "it");
+
 		for (unsigned int i = 0; i < m_node_num; i++) 
 		{
 			tmpOutput = m_weight[i][0];
@@ -89,6 +92,8 @@ int FullConnLayer::forward() {
 
 			// 使用sigmoid 函数
 			layerOutput[i] = 1.0 / (1.0 + exp(-tmpOutput));
+
+			bar.update(i);
 		}
 	}
 
