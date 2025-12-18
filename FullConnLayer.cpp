@@ -1,7 +1,6 @@
 #include<iostream>
 
 #include "FullConnLayer.hpp"
-#include "Util.hpp"
 
 
 FullConnLayer::FullConnLayer(unsigned int n) : 
@@ -45,7 +44,7 @@ FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) :
 	}
 	else
 	{
-		std::cout << "Error: The front_layer parameter passed to FullConnLayer is nullptr" << std::endl;
+		throw std::runtime_error("Error: The front_layer parameter passed to FullConnLayer is nullptr");
 	}
 }
 
@@ -79,9 +78,6 @@ int FullConnLayer::forward() {
 								// 使得计算部分代码更美观
 	if (this->prev)
 	{
-		std::cout << "\nNo." << m_current_layer << " is reasoning" <<std::endl;
-		ProgressBar bar(m_node_num, 50, "progressing", "it");
-
 		for (unsigned int i = 0; i < m_node_num; i++) 
 		{
 			tmpOutput = m_weight[i][0];
@@ -93,8 +89,6 @@ int FullConnLayer::forward() {
 
 			// 使用sigmoid 函数
 			layerOutput[i] = 1.0 / (1.0 + exp(-tmpOutput));
-
-			bar.update(i+1);
 		}
 	}
 
@@ -111,7 +105,7 @@ int FullConnLayer::forward(std::vector<double> in)
 	}
 	else
 	{
-		std::cout << "Error: The input data does not match the number of nodes in the output layer" << std::endl;
+		throw std::runtime_error("Error: The input data does not match the number of nodes in the output layer");
 		return -1;
 	}
 
@@ -125,9 +119,6 @@ int FullConnLayer::backward(double& learningStep)
 	std::vector<double> frontLayerOutput = this->prev->layerOutput;
 	std::vector<double> nextLayerDelta   = this->next->layerDelta;
 	std::vector<std::vector<double>> nextLayerWeight  = this->next->get_weight();
-	ProgressBar bar(layerOutput.size(), 50, "trainning: ", "it");
-
-	std::cout << "\nNo." << m_current_layer << " is trainning" <<std::endl;
 
 	for(unsigned int i = 0; i < layerOutput.size(); i++)
 	{
@@ -142,8 +133,6 @@ int FullConnLayer::backward(double& learningStep)
 			m_weight[i][j] += learningStep*deltaOfWeight*frontLayerOutput[j];
 		}
 		m_weight[i][m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
-
-		bar.update(i+1);
 	}
 	return 1;
 }
@@ -153,9 +142,6 @@ int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 {
 	double deltaOfWeight = 0;
 	std::vector<double> frontLayerOutput = this->prev->layerOutput;
-	ProgressBar bar(layerOutput.size(), 50, "trainning", "it");
-
-	std::cout << "\nNo." << m_current_layer << " is trainning" <<std::endl;
 
 	for(unsigned int i = 0; i < layerOutput.size(); i++)
 	{
@@ -168,8 +154,6 @@ int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 			m_weight[i][j] += learningStep*deltaOfWeight*frontLayerOutput[j];
 		}
 		m_weight[i][m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
-
-		bar.update(i+1);
 	}
 
 	return 1;
