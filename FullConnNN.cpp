@@ -44,16 +44,15 @@ int FullConnNN::backward()
 	{
         Sample sample;
 		Loader loader("..\\datasets\\mnist\\train.txt");
-		ProgressBar bar(1000, 50, "progressing", "it");
+		ProgressBar bar(60000, 50, "progressing", "it");
         
         // 此部分需批次内按样本重复，以此为退出条件
 		// 目前使用1000样本进行性能测试
 		int n = 0;
-		while(n != 2)
+		while(n != 60000)
 		{
 			++n;
         	loader.load(sample);
-			std::cout<<"\ninput size: " << sample.img.size() << std::endl;
 
 			this->forward(sample.img);  // 代入训练样本
                                         // 得到中间值
