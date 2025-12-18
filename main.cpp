@@ -11,7 +11,7 @@ int main()
 	Timer t;
 	example->backward();
 	t.pause();
-	std::cout << "time: " + t.elapsedTime() << "ms" << std::endl;
+	std::cout << "\ntime: " << t.elapsedTime() << "ms" << std::endl;
 
 	// example->display();
 	return 0;

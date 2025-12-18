@@ -22,8 +22,8 @@ public:
 
 inline FullConnNN::FullConnNN() : 
 	input(784), 
-	hidden_1(3, &input), 
-	output(300, &hidden_1)
+	hidden_1(300, &input), 
+	output(10, &hidden_1)
 { }
 
 #endif // !FullConNN_H

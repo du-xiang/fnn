@@ -18,6 +18,7 @@ public:
                 std::size_t barWidth, 
                 std::string prefix, 
                 std::string suffix);
+    ~ProgressBar();
     void update(std::size_t now);
     
 };
