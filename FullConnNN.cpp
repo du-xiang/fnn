@@ -37,38 +37,45 @@ int FullConnNN::forward(std::vector<double> in)
 int FullConnNN::backward() 
 {
 	std::cout << "** begins training **" << std::endl;
-	double learningStep = 0.01;			// 设置训练步长
+	double learningStep = 0.1;			// 设置训练步长
 	unsigned int epoch = 1;				// 设置训练轮数
+	unsigned int countRight = 0;		// forward 正确个数统计
 
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
         Sample sample;
 		Loader loader("..\\datasets\\mnist\\train.txt");
-		ProgressBar bar(60000, 50, "progressing", "it");
+		//ProgressBar bar(60000, 50, "progressing", "it");
         
-        // 此部分需批次内按样本重复，以此为退出条件
-		// 目前使用1000样本进行性能测试
+
 		int n = 0;
 		while(n != 60000)
 		{
 			++n;
         	loader.load(sample);
 
-			this->forward(sample.img);  // 代入训练样本
-                                        // 得到中间值
+			if(this->forward(sample.img) == sample.value)	// 代入训练样本
+				countRight++;								// 得到中间值,并判断推理结果是否正确
+
+			if (n % 1000 == 0)								// 迭代一千次后输出
+			{												// 并将countRight清零
+				std::cout<< "\nNo." << n << ": " << countRight/1000.0 <<std::endl;
+				countRight = 0;
+			}
+			
 
 			FullConnLayer* tmp = &output;
-        	tmp->backward(sample.value, learningStep);	// 输出层单独计算
-        	tmp = tmp->prev;
+			tmp->backward(sample.value, learningStep);		// 输出层单独计算
+			tmp = tmp->prev;
 
-			while (tmp->prev)				// 退出条件：当前层为输入层
+			while (tmp->prev)								// 退出条件：当前层为输入层
 			{
 				tmp->backward(learningStep);
 				tmp = tmp->prev;
 			}
 			sample.img.clear();
 
-			bar.update(n);
+			//bar.update(n);
 		}
 	}
 
