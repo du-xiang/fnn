@@ -76,10 +76,17 @@ int FullConnLayer::get_max_output() const
 {
 	auto maxIt = std::max_element(layerOutput.begin(), layerOutput.end());
 
-	if(*maxIt != *std::max_element(maxIt+1, layerOutput.end()))		// 判断最大值是否唯一
-		return std::distance(layerOutput.begin(), maxIt);
+	// 判断最大值是否唯一
+	// 不唯一则返回-1
+	if((maxIt+1) != layerOutput.end())
+	{
+		if((*maxIt) != (*std::max_element(maxIt+1, layerOutput.end())))
+			return std::distance(layerOutput.begin(), maxIt);
+		else
+			return -1;
+	}
 	else
-		return -1;
+		return std::distance(layerOutput.begin(), maxIt);
 }
 
 int FullConnLayer::weight_init() 
