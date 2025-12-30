@@ -28,6 +28,8 @@ public:
 
 	int set_node_num(unsigned int n);
 	unsigned int get_node_num() const;
+	bool set_node_num_next(unsigned int n);
+	unsigned int get_node_num_next() const;
 	int set_current_layer(unsigned int n);
 	unsigned int get_current_layer() const;
 	std::vector<std::vector<double>> get_weight();
@@ -39,6 +41,15 @@ public:
 	int backward(unsigned int& valeOfimg, double& learningStep);
 	void display();
 };
+
+inline bool FullConnLayer::set_node_num_next(unsigned int n)
+{ 
+	m_node_num_next = n;
+	return true;
+}
+
+inline unsigned int FullConnLayer::get_node_num_next() const
+{ return m_node_num_next; }
 
 #endif // !FullConnLayer
 

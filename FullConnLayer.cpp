@@ -33,6 +33,8 @@ FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) :
 		front_layer->next = this;
 		this->prev = front_layer;
 
+		front_layer->set_node_num_next(n);
+
 		if (front_layer->get_current_layer())
 		{
 			set_current_layer(front_layer->get_current_layer() + 1);

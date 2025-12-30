@@ -64,7 +64,7 @@ bool Loader::load(Sample& s)
 	}
 
 	if(cnt != 784)
-		throw std::runtime_error("Line does not contain exactly 64 numbers!");
+		throw std::runtime_error("Line does not contain exactly 784 numbers!");
 
 	return true;
 }
