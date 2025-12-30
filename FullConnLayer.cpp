@@ -1,4 +1,5 @@
-#include<iostream>
+#include <iostream>
+#include <algorithm>
 
 #include "FullConnLayer.hpp"
 
@@ -39,7 +40,7 @@ FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) :
 
 		m_weight = std::vector<std::vector<double>>(n,
 			std::vector<double>(m_node_num_prev+1, 0.5));	// 申请n*(front_node_num+1) 权重参数空间
-		layerOutput = std::vector<double>(n, 0.0);		// 申请n 结果内存空间
+		layerOutput = std::vector<double>(n, 0.0);			// 申请n 结果内存空间
 		layerDelta  = std::vector<double>(n, 0.0); 
 	}
 	else
@@ -68,6 +69,16 @@ unsigned int FullConnLayer::get_current_layer() const
 
 std::vector<std::vector<double>> FullConnLayer::get_weight()
 { return m_weight;}
+
+int FullConnLayer::get_max_output() const
+{
+	auto maxIt = std::max_element(layerOutput.begin(), layerOutput.end());
+
+	if(*maxIt != *std::max_element(maxIt+1, layerOutput.end()))		// 判断最大值是否唯一
+		return std::distance(layerOutput.begin(), maxIt);
+	else
+		return -1;
+}
 
 int FullConnLayer::weight_init() 
 { return 1;}

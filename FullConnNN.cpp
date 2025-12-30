@@ -31,7 +31,7 @@ int FullConnNN::forward(std::vector<double> in)
 		tmpLayer = tmpLayer->next;
 	}
 
-	return 1;
+	return output.get_max_output();
 }
 
 int FullConnNN::backward() 

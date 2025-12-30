@@ -363,3 +363,12 @@ datasets/mnist/
 
 # ignore Log diretory(Store development logs and some ideas)
 log/
+
+# ignore test.cpp
+test.cpp
+test.exe
+
+# ignore vscode config
+.vscode/
+output/
+attachment/
