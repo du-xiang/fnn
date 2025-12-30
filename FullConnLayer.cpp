@@ -1,5 +1,6 @@
 #include <iostream>
 #include <algorithm>
+#include <random>
 
 #include "FullConnLayer.hpp"
 
@@ -21,8 +22,22 @@ int FullConnLayer::get_max_output() const
 		return std::distance(layerOutput.begin(), maxIt);
 }
 
-int FullConnLayer::weight_init() 
-{ return 1;}
+bool FullConnLayer::weight_init() 
+{ 
+	std::random_device rd;
+	std::mt19937 gen(rd());	
+	std::uniform_real_distribution<double> dist(-0.1, 0.1);	
+	
+	for(int i = 0; i < m_weight.size(); i++)
+	{
+		for(int j = 0; j < m_weight[i].size(); j++)
+		{
+			m_weight[i][j] = dist(gen);
+		}
+	}
+
+	return true;
+}
 
 // 获取外部数据：front_layer
 int FullConnLayer::forward() {

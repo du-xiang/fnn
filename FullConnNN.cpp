@@ -5,6 +5,7 @@
 int FullConnNN::weight_init()
 {
 	FullConnLayer* tmp_Layer = &input;
+	tmp_Layer = tmp_Layer->next;			// 输入层不用初始化权重
 
 	while (tmp_Layer != nullptr)
 	{

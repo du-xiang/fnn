@@ -6,7 +6,7 @@
 int main()
 {
 	FullConnNN* example = new FullConnNN();
-	// example->weight_init();
+	example->weight_init();
 
 	Timer t;
 	example->backward();

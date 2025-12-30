@@ -34,7 +34,7 @@ public:
 	unsigned int get_current_layer() const;
 	std::vector<std::vector<double>> get_weight();
 	int get_max_output()  const;
-	int weight_init();
+	bool weight_init();
 	int forward();
 	int forward(std::vector<double>);
 	int backward(double& learningStep);
