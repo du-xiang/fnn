@@ -132,6 +132,7 @@ int FullConnLayer::forward(std::vector<double> in)
 	return 1;
 }
 
+// 对中间层进行反向传播
 // 获取外部数据：front_layer, next_layer
 int FullConnLayer::backward(double& learningStep)
 {
@@ -145,7 +146,7 @@ int FullConnLayer::backward(double& learningStep)
 		double sumOfError = 0.0;
 		for(unsigned int j = 0; j < m_node_num_next; j++)
 		{
-			sumOfError += nextLayerDelta[j]*nextLayerWeight[j][1];
+			sumOfError += nextLayerDelta[j]*nextLayerWeight[j][i+1];
 		}
 		deltaOfWeight = layerOutput[i]*(1-layerOutput[i])*sumOfError;
 		for(unsigned int j = 0; j < m_node_num_prev; j++)
@@ -157,6 +158,7 @@ int FullConnLayer::backward(double& learningStep)
 	return 1;
 }
 
+// 对输出层进行反向传播
 // 获取外部数据：front_layer, next_layer
 int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 {
