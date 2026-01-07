@@ -33,6 +33,7 @@ public:
 	int set_current_layer(unsigned int n);
 	unsigned int get_current_layer() const;
 	std::vector<std::vector<double>> get_weight();
+	bool set_weight(std::vector<std::vector<double>> &tmpWeight);
 	int get_max_output()  const;
 	bool weight_init();
 	int forward();
@@ -109,6 +110,21 @@ inline unsigned int FullConnLayer::get_current_layer() const
 
 inline std::vector<std::vector<double>> FullConnLayer::get_weight()
 { return m_weight;}
+
+inline bool FullConnLayer::set_weight(std::vector<std::vector<double>> &tmpWeight)
+{
+	if(this->m_weight.size() == tmpWeight.size())
+	{
+		if(tmpWeight[0].size() == this->m_weight[0].size())
+		{
+			this->m_weight = tmpWeight;
+		}
+		else return false;
+	}
+	else return false;
+
+	return true;
+}
 
 inline bool FullConnLayer::set_node_num_next(unsigned int n)
 { 

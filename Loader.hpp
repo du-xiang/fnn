@@ -27,7 +27,7 @@ public:
 
 };
 
-Loader::Loader(const std::string& filePath)
+inline Loader::Loader(const std::string& filePath)
 {
 	file_.open(filePath);
 
@@ -37,7 +37,7 @@ Loader::Loader(const std::string& filePath)
 	}
 }
 
-Loader::~Loader()
+inline Loader::~Loader()
 {
 	if(file_.is_open())
 	{
@@ -45,7 +45,7 @@ Loader::~Loader()
 	}
 }
 
-bool Loader::load(Sample& s)
+inline bool Loader::load(Sample& s)
 {
 	std::string line;
 

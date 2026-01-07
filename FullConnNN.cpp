@@ -18,6 +18,94 @@ int FullConnNN::weight_init()
 	return 1;
 }
 
+// 存储网络权重参数
+// 由于输入层直接接受传入参数，直接从第二层开始存储
+bool FullConnNN::weight_save(const std::string& path)
+{
+	std::vector<std::vector<std::vector<double>>> weightAll;
+	FullConnLayer *tmpLayer = &input;
+
+	while(tmpLayer->next)
+	{
+		tmpLayer = tmpLayer->next;
+		weightAll.push_back(tmpLayer->get_weight());
+	}
+
+	FILE *f = std::fopen(path.c_str(), "w+b");
+	if (!f) throw std::runtime_error("weight save: fopen failed");
+
+	uint64_t n = weightAll.size();
+	std::fwrite(&n, sizeof(n), 1, f);
+
+	for (const auto& w : weightAll) 
+	{
+        uint64_t rows = w.size();
+        std::fwrite(&rows, sizeof(rows), 1, f);
+        for (const auto& row : w) {
+            uint64_t cols = row.size();
+            std::fwrite(&cols, sizeof(cols), 1, f);
+            std::fwrite(row.data(), sizeof(double), cols, f);
+        }
+    }
+    std::fclose(f);
+
+	std::cout << "\nweight save successful" <<std::endl;
+
+	return true;
+}
+
+bool FullConnNN::weight_load(const std::string &path)
+{
+	std::vector<std::vector<std::vector<double>>> weightAll;
+	FullConnLayer *tmpLayer = &input;
+
+	FILE *f = std::fopen(path.c_str(), "rb");
+	if (!f) 
+	{
+		throw std::runtime_error("weight laoding: fopen failed");
+		return false;
+	}
+
+	uint64_t n;
+    if (std::fread(&n, sizeof(n), 1, f) != 1)
+        throw std::runtime_error("weight loading: read n failed");
+    weightAll.resize(n);
+
+	for (auto& w : weightAll) {
+        uint64_t rows;
+        if (std::fread(&rows, sizeof(rows), 1, f) != 1)
+            throw std::runtime_error("weight loading: read rows failed");
+        w.resize(rows);
+        for (auto& row : w) {
+            uint64_t cols;
+            if (std::fread(&cols, sizeof(cols), 1, f) != 1)
+                throw std::runtime_error("weight loading: read cols failed");
+            row.resize(cols);
+            if (std::fread(row.data(), sizeof(double), cols, f) != cols)
+                throw std::runtime_error("weight loading: read data failed");
+        }
+    }
+    std::fclose(f);
+
+	int i = 0;
+	tmpLayer->weight_init();			// 输入层单独加载，即可视为将其初始化
+	while(tmpLayer->next)
+	{
+		tmpLayer = tmpLayer->next;
+		if(tmpLayer->set_weight(weightAll[i]))
+			++i;
+		else 
+		{
+			throw std::runtime_error("weight loading: The weight file does not match the model weight");
+			return false;
+		}
+	}
+
+	std::cout << "\nweight load successful" <<std::endl;
+
+	return true;
+}
+
 int FullConnNN::forward(std::vector<double> in)
 {
 	FullConnLayer* tmpLayer = &input;
@@ -38,7 +126,7 @@ int FullConnNN::forward(std::vector<double> in)
 int FullConnNN::backward() 
 {
 	std::cout << "** begins training **" << std::endl;
-	double learningStep = 0.1;			// 设置训练步长
+	double learningStep = 0.001;		// 设置训练步长
 	unsigned int epoch = 1;				// 设置训练轮数
 	unsigned int countRight = 0;		// forward 正确个数统计
 
