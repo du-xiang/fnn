@@ -64,7 +64,10 @@ inline bool Loader::load(Sample& s)
 	}
 
 	if(cnt != 784)
-		throw std::runtime_error("Line does not contain exactly 784 numbers!");
+	{
+		std::cerr << "Line does not contain exactly 784 numbers!" << std::endl;	// 错误时会跳过此样本，所以无需异常处理
+		return false;
+	}
 
 	return true;
 }

@@ -20,7 +20,7 @@ int main()
 
 		loader.load(sample);
 
-		std::cout << "\nthe real value is: " << sample.value
+		std::cout << "the real value is: " << sample.value
 			<< "\nthe predict value is: "<< example->forward(sample.img) << std::endl;
 	}
 	else
@@ -33,7 +33,7 @@ int main()
 		example->weight_save(weightPath);
 
 		t.pause();
-		std::cout << "\ntime: " << t.elapsedTime() << "ms" << std::endl;
+		std::cout << "time: " << t.elapsedTime() << "ms" << std::endl;
 	}
 	return 0;
 }

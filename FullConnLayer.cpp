@@ -72,7 +72,7 @@ int FullConnLayer::forward(std::vector<double> in)
 	}
 	else
 	{
-		throw std::runtime_error("Error: The input data does not match the number of nodes in the output layer");
+		std::cerr << "Error: The input data does not match the number of nodes in the output layer" << std::endl;
 		return -1;
 	}
 
