@@ -28,8 +28,8 @@ x86/
 bld/
 [Bb]in/
 [Oo]bj/
-[Ll]og/
-[Ll]ogs/
+# [Ll]og/
+# [Ll]ogs/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -361,8 +361,8 @@ build/
 # ignore database(The file is larger than 100M and cannot be uploaded.)
 datasets/mnist/
 
-# ignore Log diretory(Store development logs and some ideas)
-log/
+# ignore develop.md
+develop.md
 
 # ignore test.cpp
 test.cpp

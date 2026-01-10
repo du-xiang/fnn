@@ -13,6 +13,7 @@ add_executable( fnn
                 FullConnLayer.cpp
                 FullConnNN.cpp
                 Util.cpp
+                Logger.cpp
               )
 
 # 指定包含目录，确保头文件可以被正确找到

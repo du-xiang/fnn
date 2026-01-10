@@ -1,0 +1,14 @@
+[2026-01-10 18:21:20.761] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:16] - 程序开始运行
+[2026-01-10 18:21:20.765] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:72] - 开始加载模型权重
+[2026-01-10 18:21:20.766] [ERROR] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:81] - 权重参数加载失败：文件打开失败
+[2026-01-10 18:21:20.766] [WARN] [D:\Project\Github\du-xiang\fnn\main.cpp:40] - 未成功加载模型权重参数，准备重新训练
+[2026-01-10 18:21:20.766] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:9] - 开始进行模型权重初始化
+[2026-01-10 18:21:20.796] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:44] - 模型权重参数初始化成功
+[2026-01-10 18:21:20.796] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:30] - 开始保存模型权重
+[2026-01-10 18:21:20.818] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:47] - 成功保持初始化的模型权重参数
+[2026-01-10 18:21:20.818] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:162] - 开始进行反向传播训练
+[2026-01-10 18:21:20.819] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:171] - 本次训练：学习率=0.001000, epoch=1
+[2026-01-10 18:30:03.498] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:50] - 反向传播训练完成
+[2026-01-10 18:30:03.498] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:30] - 开始保存模型权重
+[2026-01-10 18:30:03.522] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:53] - 模型权重参数存储完成
+[2026-01-10 18:30:03.523] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:57] - IcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tagEN6_GuardD1Ev

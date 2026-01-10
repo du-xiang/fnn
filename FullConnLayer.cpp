@@ -3,6 +3,7 @@
 #include <random>
 
 #include "FullConnLayer.hpp"
+#include "Logger.hpp"
 
 
 int FullConnLayer::get_max_output() const
@@ -66,13 +67,16 @@ int FullConnLayer::forward() {
 // 用于接收数据
 int FullConnLayer::forward(std::vector<double> in)
 {
+	Logger& logger = Logger::getInstance("..//log//log.txt");
+
 	if (layerOutput.size() == in.size())
 	{
 		layerOutput = in;
 	}
 	else
 	{
-		std::cerr << "Error: The input data does not match the number of nodes in the output layer" << std::endl;
+		std::cerr << "Error: The input data does not match the number of nodes in the input layer" << std::endl;
+		logger.log(logLevel::ERROR, __FILE__, __LINE__, "输入数据与输入层结点数量大小不匹配");
 		return -1;
 	}
 

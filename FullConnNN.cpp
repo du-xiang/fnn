@@ -1,9 +1,13 @@
 #include "FullConnNN.hpp"
 #include "Loader.hpp"
 #include "Util.hpp"
+#include "Logger.hpp"
 
 int FullConnNN::weight_init()
 {
+	Logger& logger = Logger::getInstance("..//log//log.txt");
+	logger.log(logLevel::INFO, __FILE__, __LINE__, "开始进行模型权重初始化");
+
 	FullConnLayer* tmp_Layer = &input;
 	tmp_Layer = tmp_Layer->next;			// 输入层不用初始化权重
 
@@ -22,6 +26,9 @@ int FullConnNN::weight_init()
 // 由于输入层直接接受传入参数，直接从第二层开始存储
 bool FullConnNN::weight_save(const std::string& path)
 {
+	Logger& logger = Logger::getInstance("..//log//log.txt");
+	logger.log(logLevel::INFO, __FILE__, __LINE__, "开始保存模型权重");
+
 	std::vector<std::vector<std::vector<double>>> weightAll;
 	FullConnLayer *tmpLayer = &input;
 
@@ -35,6 +42,7 @@ bool FullConnNN::weight_save(const std::string& path)
 	if (!f) 
 	{
 		std::cerr << "weight save: fopen failed" << std::endl;
+		logger.log(logLevel::ERROR, __FILE__, __LINE__, "模型权重参数保存失败：文件打开失败");
 		return false;
 	}
 
@@ -60,6 +68,9 @@ bool FullConnNN::weight_save(const std::string& path)
 
 bool FullConnNN::weight_load(const std::string &path)
 {
+	Logger& logger = Logger::getInstance("..//log//log.txt");
+	logger.log(logLevel::INFO, __FILE__, __LINE__, "开始加载模型权重");
+
 	std::vector<std::vector<std::vector<double>>> weightAll;
 	FullConnLayer *tmpLayer = &input;
 
@@ -67,12 +78,17 @@ bool FullConnNN::weight_load(const std::string &path)
 	if (!f) 
 	{
 		std::cerr << "weight laoding: fopen failed" << std::endl;
+		logger.log(logLevel::ERROR, __FILE__, __LINE__, "权重参数加载失败：文件打开失败");
 		return false;
 	}
 
 	uint64_t n;
     if (std::fread(&n, sizeof(n), 1, f) != 1)
+	{
         std::cerr << "weight loading: read n failed" << std::endl;
+		logger.log(logLevel::ERROR, __FILE__, __LINE__, "权重参数加载失败：参数n读取失败");
+		return false;
+	}
     weightAll.resize(n);
 
 	for (auto& w : weightAll) {
@@ -80,6 +96,7 @@ bool FullConnNN::weight_load(const std::string &path)
         if (std::fread(&rows, sizeof(rows), 1, f) != 1)
 		{
             std::cerr << "weight loading: read rows failed" << std::endl;
+			logger.log(logLevel::ERROR, __FILE__, __LINE__, "权重参数加载失败：参数n读取失败");
 			return false;
 		}
         w.resize(rows);
@@ -88,12 +105,14 @@ bool FullConnNN::weight_load(const std::string &path)
             if (std::fread(&cols, sizeof(cols), 1, f) != 1)
 			{
                 std::cerr << "weight loading: read cols failed" << std::endl;
+				logger.log(logLevel::ERROR, __FILE__, __LINE__, "权重参数加载失败：参数rows读取失败");
 				return false;
 			}
             row.resize(cols);
             if (std::fread(row.data(), sizeof(double), cols, f) != cols)
 			{
                 std::cerr << "weight loading: read data failed" << std::endl;
+				logger.log(logLevel::ERROR, __FILE__, __LINE__, "权重参数加载失败：当前层参数读取失败");
 				return false;
 			}
         }
@@ -110,6 +129,7 @@ bool FullConnNN::weight_load(const std::string &path)
 		else 
 		{
 			std::cerr << "weight loading: The weight file does not match the model weight" << std::endl;
+			logger.log(logLevel::ERROR, __FILE__, __LINE__, "权重参数加载失败：读取参数与网络不匹配");
 			return false;
 		}
 	}
@@ -138,10 +158,17 @@ int FullConnNN::forward(std::vector<double> in)
 
 int FullConnNN::backward() 
 {
+	Logger& logger = Logger::getInstance("..//log//log.txt");
+	logger.log(logLevel::INFO, __FILE__, __LINE__, "开始进行反向传播训练");
+
 	std::cout << "begins training" << std::endl;
 	double learningStep = 0.001;		// 设置训练步长
 	unsigned int epoch = 1;				// 设置训练轮数
 	unsigned int countRight = 0;		// forward 正确个数统计
+
+	std::string outMessage = "本次训练：学习率="+std::to_string(learningStep)
+							+", epoch="+std::to_string(epoch);
+	logger.log(logLevel::INFO, __FILE__, __LINE__, outMessage);
 
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
@@ -154,7 +181,7 @@ int FullConnNN::backward()
 		while(n != 60000)
 		{
 			++n;
-        	while(loader.load(sample)){};					// 直到读出有效样本
+        	while(!loader.load(sample)){};					// 直到读出有效样本
 
 			if(this->forward(sample.img) == sample.value)	// 代入训练样本
 				countRight++;								// 得到中间值,并判断推理结果是否正确
