@@ -51,10 +51,10 @@ bool Logger::log(logLevel level, const std::string& file, int line, const std::s
     std::string logLevelStr = "";
     switch (level)
     {
-        case logLevel::INFO: logLevelStr = "INFO"; break;
-        case logLevel::WARN: logLevelStr = "WARN"; break;
-        case logLevel::ERROR: logLevelStr = "ERROR"; break;
-        case logLevel::FATAL: logLevelStr = "FATAL"; break;
+        case logLevel::logINFO: logLevelStr = "INFO"; break;
+        case logLevel::logWARN: logLevelStr = "WARN"; break;
+        case logLevel::logERROR: logLevelStr = "ERROR"; break;
+        case logLevel::logFATAL: logLevelStr = "FATAL"; break;
     }
 
     std::string logStr = "[" + oss_time.str() + "] "

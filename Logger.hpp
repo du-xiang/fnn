@@ -6,10 +6,10 @@
 
 enum class logLevel
 {
-    INFO,
-    WARN,
-    ERROR,
-    FATAL
+    logINFO,
+    logWARN,
+    logERROR,
+    logFATAL
 };
 
 class Logger
@@ -18,7 +18,7 @@ private:
     logLevel m_logLevel;
     std::ofstream m_logFile;
 
-    Logger() : m_logLevel(logLevel::INFO) {};       // 默认logLevel为INFO
+    Logger() : m_logLevel(logLevel::logINFO) {};       // 默认logLevel为INFO
     ~Logger();
 public:
     Logger(const Logger&) = delete;

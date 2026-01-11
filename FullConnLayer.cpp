@@ -76,7 +76,7 @@ int FullConnLayer::forward(std::vector<double> in)
 	else
 	{
 		std::cerr << "Error: The input data does not match the number of nodes in the input layer" << std::endl;
-		logger.log(logLevel::ERROR, __FILE__, __LINE__, "输入数据与输入层结点数量大小不匹配");
+		logger.log(logLevel::logERROR, __FILE__, __LINE__, "输入数据与输入层结点数量大小不匹配");
 		return -1;
 	}
 
