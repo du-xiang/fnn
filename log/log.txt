@@ -12,3 +12,7 @@
 [2026-01-10 18:30:03.498] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:30] - 开始保存模型权重
 [2026-01-10 18:30:03.522] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:53] - 模型权重参数存储完成
 [2026-01-10 18:30:03.523] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:57] - IcEE12_M_constructIPcEEvT_S7_St20forward_iterator_tagEN6_GuardD1Ev
+[2026-01-11 09:35:53.250] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:16] - 程序开始运行
+[2026-01-11 09:35:53.254] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:72] - 开始加载模型权重
+[2026-01-11 09:35:53.274] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:23] - 成功加载模型权重参数
+[2026-01-11 09:35:53.274] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:27] - 开始进行推理

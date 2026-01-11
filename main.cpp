@@ -10,7 +10,7 @@
 #include "Loader.hpp"
 #include "Logger.hpp"
 
-int main()
+bool predictFNN(std::vector<double> img)
 {
 	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::INFO, __FILE__, __LINE__, "程序开始运行");
@@ -54,7 +54,16 @@ int main()
 
 		t.pause();
 		std::cout << "time: " << t.elapsedTime() << "ms" << std::endl;
-		logger.log(logLevel::INFO, __FILE__, __LINE__, "训练完成。本次训练耗时："+std::to_string(t.elapsedTime()));
+		logger.log(logLevel::INFO, __FILE__, __LINE__, "训练完成。本次训练耗时："+std::to_string(t.elapsedTime())+" ms");
 	}
+
+	return true;
+}
+
+int main()
+{
+	std::vector<double> img;
+	predictFNN(img);
+
 	return 0;
 }
