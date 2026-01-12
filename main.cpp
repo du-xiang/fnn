@@ -11,7 +11,9 @@
 #include "Loader.hpp"
 #include "Logger.hpp"
 
-bool predictFNN(std::vector<double> img)
+#include "httplib.h"
+
+int predictFNN(std::vector<double> img)
 {
 	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "程序开始运行");
@@ -27,14 +29,7 @@ bool predictFNN(std::vector<double> img)
 		// 将此日志信息写入步骤从类成员函数中提取出来
 		logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行推理");
 
-
-		//Sample sample;
-		//Loader loader("..\\datasets\\mnist\\test.txt");
-
-		//loader.load(sample);
-
-		//std::cout << "the real value is: " << sample.value
-		//	<< "\nthe predict value is: "<< example->forward(sample.img) << std::endl;
+		return example->forward(img);
 	}
 	else
 	{
@@ -56,15 +51,98 @@ bool predictFNN(std::vector<double> img)
 		t.pause();
 		std::cout << "time: " << t.elapsedTime() << "ms" << std::endl;
 		logger.log(logLevel::logINFO, __FILE__, __LINE__, "训练完成。本次训练耗时："+std::to_string(t.elapsedTime())+" ms");
+
+		return example->forward(img);
 	}
 
+	return 0;
+}
+
+// 空格隔开的数值string解析为vector<double>
+static bool str2vector(const std::string &s, std::vector<double> &out) 
+{
+    out.clear();
+    std::istringstream ss(s);
+    std::string token;
+
+    while (ss >> token) 
+	{
+        auto first = token.find_first_not_of(" \t\r\n");
+        if (first == std::string::npos) continue;
+        auto last = token.find_last_not_of(" \t\r\n");
+        std::string t = token.substr(first, last - first + 1);
+
+        try {
+            double v = std::stod(t);
+            out.push_back(v);
+        } catch (...) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool serverInit(httplib::Server &svr)
+{
+	// 打印所有请求，便于调试
+    svr.set_logger([](const httplib::Request &req, const httplib::Response &res){
+        std::cout << "[" << req.remote_addr << "] " << req.method << " " << req.path
+                  << " -> " << res.status << " (len=" << req.body.size() << ")" << std::endl;
+    });
+
+    // 通用的 CORS helper（允许所有来源，调试时方便）
+    auto add_cors = [](httplib::Response &res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.set_header("Access-Control-Allow-Headers", "Content-Type");
+    };
+
+    // OPTIONS 预检（CORS preflight）
+    svr.Options(R"(/process)", [&](const httplib::Request & /*req*/, httplib::Response &res){
+        add_cors(res);
+        res.status = 200;
+        res.set_content("", "text/plain");
+    });
+
+    // POST 处理接口
+    svr.Post(R"(/process)", [&](const httplib::Request &req, httplib::Response &res){
+        add_cors(res);
+
+        std::vector<double> data;
+        if (!str2vector(req.body, data)) 
+		{
+            res.status = 400;
+            res.set_content("{\"error\":\"invalid integer data\"}", "application/json");
+            return;
+        }
+        if (data.size() != 784) 
+		{
+            res.status = 400;
+            std::ostringstream err;
+            err << "{\"error\":\"expected 784 integers, got " << data.size() << "\"}";
+            res.set_content(err.str(), "application/json");
+            return;
+        }
+
+        long long sum = 0;
+        for (int v : data) sum += v;
+        int result = static_cast<int>(sum);
+		int predicValue = predictFNN(data);
+
+        std::ostringstream out;
+        out << "{\"result\":" << predicValue << "}";
+        res.set_content(out.str(), "application/json");
+    });
 	return true;
 }
 
 int main()
 {
-	std::vector<double> img;
-	predictFNN(img);
+	httplib::Server svr;
+	serverInit(svr);
+	
+	std::cout << "Server listening on http://127.0.0.1:8080\n";
+    svr.listen("127.0.0.1", 8080);
 
 	return 0;
 }

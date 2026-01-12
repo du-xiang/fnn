@@ -372,3 +372,6 @@ test.exe
 .vscode/
 output/
 attachment/
+
+# Ignore third-party libraries
+httplib.h

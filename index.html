@@ -1,0 +1,251 @@
+<!--
+** 此部分使用豆包编程实现，可能存在些微问题
+** 但仍可作为快速实现的前端显示页面
+-->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FNN 手写数字识别</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .canvas-box {
+            position: relative;
+        }
+
+        #canvas {
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            background: white;
+            cursor: crosshair;
+            transition: box-shadow 0.3s ease;
+        }
+
+        #canvas:hover {
+            box-shadow: 0 0 10px rgba(66, 153, 225, 0.3);
+        }
+
+        .btn-group {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #clearBtn {
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        #clearBtn:hover {
+            background-color: #e5e6eb;
+        }
+
+        #predictBtn {
+            background-color: #4299e1;
+            color: white;
+        }
+
+        #predictBtn:hover {
+            background-color: #3182ce;
+            transform: translateY(-2px);
+        }
+
+        #predictBtn:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 200px;
+        }
+
+        .result-title {
+            font-size: 18px;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .result-content {
+            font-size: 48px;
+            font-weight: 700;
+            color: #4299e1;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #e0e6ed;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .card {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="canvas-box">
+            <canvas id="canvas" width="280" height="280"></canvas>
+            <div class="btn-group">
+                <button id="clearBtn">清空画布</button>
+                <button id="predictBtn">开始预测</button>
+            </div>
+        </div>
+        <div class="result-box">
+            <div class="result-title">预测结果：</div>
+            <div class="result-content" id="result">等待预测</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const resultEl = document.getElementById('result');
+        const clearBtn = document.getElementById('clearBtn');
+        const predictBtn = document.getElementById('predictBtn');
+
+        // 初始化画布
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#2d3748';
+        ctx.lineWidth = 12;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // 画布绘图逻辑
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        });
+
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', () => isDrawing = false);
+        canvas.addEventListener('mouseout', () => isDrawing = false);
+
+        // 触摸设备适配，提升兼容性
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            [lastX, lastY] = [touch.clientX - rect.left, touch.clientY - rect.top];
+            isDrawing = true;
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            draw({ offsetX: touch.clientX - rect.left, offsetY: touch.clientY - rect.top });
+        });
+
+        canvas.addEventListener('touchend', () => isDrawing = false);
+
+        function draw(e) {
+            if (!isDrawing) return;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+            [lastX, lastY] = [e.offsetX, e.offsetY];
+        }
+
+        // 清空画布
+        clearBtn.addEventListener('click', () => {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            resultEl.textContent = '等待预测';
+            resultEl.style.color = '#4299e1';
+        });
+
+        //  使用C++ 服务端进行预测
+        predictBtn.addEventListener('click', async () => {
+            // 画布数据转 28x28 灰度向量
+            const smallCanvas = document.createElement('canvas');
+            smallCanvas.width = 28;
+            smallCanvas.height = 28;
+            const smallCtx = smallCanvas.getContext('2d');
+            smallCtx.drawImage(canvas, 0, 0, 28, 28);
+            const imageData = smallCtx.getImageData(0, 0, 28, 28);
+            const dataOrigin = Array.from(imageData.data).filter((_, i) => i % 4 === 0);
+            const data = dataOrigin.map(pixel => 255 - pixel);     // 像素灰度值反转
+            console.log(data.join(" "));
+
+            // 显示加载状态
+            resultEl.textContent = '识别中...';
+            resultEl.style.color = '#9f7aea';
+
+            try {
+                // 连接 C++ 服务端
+                // 以 text/plain 发送逗号分隔的整数
+                const resp = await fetch('http://127.0.0.1:8080/process', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: data.join(' ')
+                });
+                if (!resp.ok) {
+                    const text = await resp.text();
+                    document.getElementById('result').textContent = '连接失败: HTTP ' + resp.status + ':\n' + text;
+                    return;
+                }
+                const predictValue = await resp.json();
+                resultEl.textContent = JSON.stringify(predictValue, null, 2);
+            } catch (err) {
+                resultEl.textContent = '预测出错';
+                resultEl.style.color = '#e53e3e';
+            }
+        });
+    </script>
+</body>
+</html>

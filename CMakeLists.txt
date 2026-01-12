@@ -18,3 +18,4 @@ add_executable( fnn
 
 # 指定包含目录，确保头文件可以被正确找到
 target_include_directories(fnn PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(fnn PRIVATE ws2_32 iphlpapi)
