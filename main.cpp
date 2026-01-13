@@ -15,9 +15,7 @@
 
 int predictFNN(std::vector<double> img)
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
-	logger.log(logLevel::logINFO, __FILE__, __LINE__, "程序开始运行");
-
+    Logger& logger = Logger::getInstance("..//log//log.txt");
 	std::string weightPath = "..//weight//weight.w";
 	std::shared_ptr<FullConnNN> example(new FullConnNN());
 
@@ -51,6 +49,9 @@ int predictFNN(std::vector<double> img)
 		t.pause();
 		std::cout << "time: " << t.elapsedTime() << "ms" << std::endl;
 		logger.log(logLevel::logINFO, __FILE__, __LINE__, "训练完成。本次训练耗时："+std::to_string(t.elapsedTime())+" ms");
+
+        double rate = example->test();
+        logger.log(logLevel::logINFO, __FILE__, __LINE__, "测试完成。正确率: " + std::to_string(rate));
 
 		return example->forward(img);
 	}
@@ -124,9 +125,6 @@ bool serverInit(httplib::Server &svr)
             return;
         }
 
-        long long sum = 0;
-        for (int v : data) sum += v;
-        int result = static_cast<int>(sum);
 		int predicValue = predictFNN(data);
 
         std::ostringstream out;
@@ -138,9 +136,14 @@ bool serverInit(httplib::Server &svr)
 
 int main()
 {
+    Logger& logger = Logger::getInstance("..//log//log.txt");
+	logger.log(logLevel::logINFO, __FILE__, __LINE__, "程序开始运行");
+
 	httplib::Server svr;
+    logger.log(logLevel::logINFO, __FILE__, __LINE__, "开启网络连接功能");
 	serverInit(svr);
 	
+    logger.log(logLevel::logINFO, __FILE__, __LINE__, "开启监听,监听127.0.0.1:8080");
 	std::cout << "Server listening on http://127.0.0.1:8080\n";
     svr.listen("127.0.0.1", 8080);
 

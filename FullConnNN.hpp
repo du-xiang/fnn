@@ -19,7 +19,7 @@ public:
 	bool weight_load(const std::string& path);
 	int forward(std::vector<double> in);
 	int backward();
-	void display();
+	double test();
 };
 
 inline FullConnNN::FullConnNN() : 

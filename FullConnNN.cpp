@@ -202,7 +202,7 @@ int FullConnNN::backward()
 				tmp->backward(learningStep);
 				tmp = tmp->prev;
 			}
-			sample.img.clear();
+			sample.img.clear();								// 清空img，避免累积
 
 			//bar.update(n);
 		}
@@ -211,15 +211,31 @@ int FullConnNN::backward()
 	return 0;
 }
 
-void FullConnNN::display()
+double FullConnNN::test()
 {
-	FullConnLayer* tmp_Layer = &input;
+	Logger& logger = Logger::getInstance("..//log//log.txt");
+	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行测试集测试");
 
-	std::cout << "Display of detailed information on network structure" << std::endl;
+	double ret = 0.0;
+	Sample sample;
+	Loader loader("..\\datasets\\mnist\\test.txt");
 
-	while (tmp_Layer != nullptr)
+	int exactNum = 0;
+	int allNum = 0;
+	int n = 0;
+	while(n != 10000)
 	{
-		tmp_Layer->display();
-		tmp_Layer = tmp_Layer->next;
+		++n;
+		while(!loader.load(sample)){};
+		
+		if(this->forward(sample.img) == sample.value)
+		{
+			exactNum++;
+		}
+		allNum++;
+		sample.img.clear();
 	}
+	ret = static_cast<double>(exactNum)/allNum;
+
+	return ret;
 }
