@@ -75,6 +75,14 @@ LeCun, Y., Bottou, L., Bengio, Y., & Haffner, P. (1998). Gradient-based learning
 ### 5.1 未优化项目（v1.0.0）
 本版本采用未经任何相关优化的原始实现，单 epoch 训练耗时 583 800 ms，用作后续优化后版本性能对比的基准。
 
+### 5.2
+经对比测试，预处理过的数据集与未处理的数据集运行速度上差异显著。预处理后的数据集带了的一定的可读性，但会显著增加程序运行时间成本，整体收益为负。权衡之下，决定使用原数据集。
+```powershell
+PS D:\Project\Github\du-xiang\fnn\test\build> ./loaderTest.exe
+time: 200791ms
+time: 938ms
+```
+
 ### 5.2 性能对比
 |版本|耗时|准确率|优化点|git tag|
 |---|---|---|---|---|
