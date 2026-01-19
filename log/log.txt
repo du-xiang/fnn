@@ -177,3 +177,16 @@
 [2026-01-13 08:16:42.430] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:51] - 训练完成。本次训练耗时：583800 ms
 [2026-01-13 08:16:42.430] [INFO] [D:\Project\Github\du-xiang\fnn\FullConnNN.cpp:217] - 开始进行测试集测试
 [2026-01-13 08:16:42.458] [INFO] [D:\Project\Github\du-xiang\fnn\main.cpp:54] - 测试完成。正确率: 0.855400
+[2026-01-19 14:10:29.709] [INFO] [D:\Project\Github\fnn\main.cpp:148] - 程序开始运行
+[2026-01-19 14:10:29.712] [INFO] [D:\Project\Github\fnn\FullConnNN.cpp:9] - 开始进行模型权重初始化
+[2026-01-19 14:10:29.771] [INFO] [D:\Project\Github\fnn\main.cpp:28] - 模型权重参数初始化成功
+[2026-01-19 14:10:29.771] [INFO] [D:\Project\Github\fnn\FullConnNN.cpp:30] - 开始保存模型权重
+[2026-01-19 14:10:29.798] [INFO] [D:\Project\Github\fnn\main.cpp:31] - 成功保持初始化的模型权重参数
+[2026-01-19 14:10:29.798] [INFO] [D:\Project\Github\fnn\FullConnNN.cpp:162] - 开始进行反向传播训练
+[2026-01-19 14:10:29.799] [INFO] [D:\Project\Github\fnn\FullConnNN.cpp:171] - 本次训练：学习率=0.001000, epoch=1
+[2026-01-19 14:18:48.768] [INFO] [D:\Project\Github\fnn\main.cpp:34] - 反向传播训练完成
+[2026-01-19 14:18:48.768] [INFO] [D:\Project\Github\fnn\FullConnNN.cpp:30] - 开始保存模型权重
+[2026-01-19 14:18:48.784] [INFO] [D:\Project\Github\fnn\main.cpp:37] - 模型权重参数存储完成
+[2026-01-19 14:18:48.785] [INFO] [D:\Project\Github\fnn\main.cpp:41] - 训练完成。本次训练耗时：499072 ms
+[2026-01-19 14:18:48.785] [INFO] [D:\Project\Github\fnn\FullConnNN.cpp:217] - 开始进行测试集测试
+[2026-01-19 14:19:40.197] [INFO] [D:\Project\Github\fnn\main.cpp:44] - 测试完成。正确率: 0.851100
