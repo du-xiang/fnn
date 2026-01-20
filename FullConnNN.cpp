@@ -49,11 +49,12 @@ bool FullConnNN::weight_save(const std::string& path)
 	uint64_t n = weightAll.size();
 	std::fwrite(&n, sizeof(n), 1, f);
 
-	for (const auto& w : weightAll) 
+	for (const auto& w : weightAll)
 	{
         uint64_t rows = w.size();
         std::fwrite(&rows, sizeof(rows), 1, f);
-        for (const auto& row : w) {
+        for (const auto& row : w) 
+		{
             uint64_t cols = row.size();
             std::fwrite(&cols, sizeof(cols), 1, f);
             std::fwrite(row.data(), sizeof(double), cols, f);
@@ -86,7 +87,7 @@ bool FullConnNN::weight_load(const std::string &path)
     if (std::fread(&n, sizeof(n), 1, f) != 1)
 	{
         std::cerr << "weight loading: read n failed" << std::endl;
-		logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败：参数n读取失败");
+		logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败: 参数n读取失败");
 		return false;
 	}
     weightAll.resize(n);
@@ -96,7 +97,7 @@ bool FullConnNN::weight_load(const std::string &path)
         if (std::fread(&rows, sizeof(rows), 1, f) != 1)
 		{
             std::cerr << "weight loading: read rows failed" << std::endl;
-			logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败：参数n读取失败");
+			logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败: 参数n读取失败");
 			return false;
 		}
         w.resize(rows);
@@ -105,7 +106,7 @@ bool FullConnNN::weight_load(const std::string &path)
             if (std::fread(&cols, sizeof(cols), 1, f) != 1)
 			{
                 std::cerr << "weight loading: read cols failed" << std::endl;
-				logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败：参数rows读取失败");
+				logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败: 参数rows读取失败");
 				return false;
 			}
             row.resize(cols);
@@ -159,6 +160,8 @@ int FullConnNN::forward(std::vector<double> in)
 int FullConnNN::backward() 
 {
 	Logger& logger = Logger::getInstance("..//log//log.txt");
+	const char *imgPath = "..\\datasets\\mnist\\train-images.idx3-ubyte";
+	const char *lblPath = "..\\datasets\\mnist\\train-labels.idx1-ubyte";
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行反向传播训练");
 
 	std::cout << "begins training" << std::endl;
@@ -173,7 +176,7 @@ int FullConnNN::backward()
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
         Sample sample;
-		Loader loader("..\\datasets\\mnist\\train.txt");
+		Loader loader(imgPath, lblPath);
 		//ProgressBar bar(60000, 50, "progressing", "it");
         
 
@@ -214,11 +217,13 @@ int FullConnNN::backward()
 double FullConnNN::test()
 {
 	Logger& logger = Logger::getInstance("..//log//log.txt");
+	const char *imgPath = "..//datasets//mnist//t10k-images.idx3-ubyte";
+	const char *lblPath = "..//datasets//mnist//t10k-labels.idx1-ubyte";
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行测试集测试");
 
 	double ret = 0.0;
 	Sample sample;
-	Loader loader("..\\datasets\\mnist\\test.txt");
+	Loader loader(imgPath, lblPath);
 
 	int exactNum = 0;
 	int allNum = 0;
@@ -226,8 +231,8 @@ double FullConnNN::test()
 	while(n != 10000)
 	{
 		++n;
-		while(!loader.load(sample)){};
-		
+		loader.load(sample);
+
 		if(this->forward(sample.img) == sample.value)
 		{
 			exactNum++;

@@ -1,9 +1,10 @@
 #ifndef Loader_H
 #define Loader_H
 
-#include <fstream>
+#include <iostream>
+#include <cstdio>
+#include <cstdint>
 #include <vector>
-#include <sstream>
 #include <string>
 #include <stdexcept>
 
@@ -14,60 +15,79 @@ struct Sample
 	std::vector<double> img;
 };
 
+static inline uint32_t be32(const uint8_t* p)
+{
+    return (uint32_t(p[0]) << 24) | (uint32_t(p[1]) << 16) |
+           (uint32_t(p[2]) << 8)  | uint32_t(p[3]);
+}
+
 class Loader
 {
 private:
-	std::ifstream file_;  // 文件流
+	FILE *fimg;
+	FILE *flbl;
+	int pos;
+	std::vector<double> images;
+	std::vector<unsigned int> labels;
 
 public:
 	Loader() = delete;
-	explicit Loader(const std::string& filePath);
+	explicit Loader(const char *&imgPath, const char *&lblPath);
 	~Loader();
 	bool load(Sample& s);
-
 };
 
-inline Loader::Loader(const std::string& filePath)
+inline Loader::Loader(const char *&imgPath, const char *&lblPath) : pos(0)
 {
-	file_.open(filePath);
+	fimg = std::fopen("..\\datasets\\mnist\\train-images.idx3-ubyte", "rb");
+    flbl = std::fopen("..\\datasets\\mnist\\train-labels.idx1-ubyte", "rb");
+    if (!fimg || !flbl) throw std::runtime_error("Loader: Cannot open file");
 
-	if(!file_.is_open())
-	{
-		throw std::runtime_error("Cannot open file: " + filePath);
-	}
+	uint8_t head[16];
+    if (std::fread(head, 1, 16, fimg) != 16) throw std::runtime_error("Loader: image header data read error");
+    if (be32(head) != 0x00000803) throw std::runtime_error("Loader: image dimension mismatch");
+    int N = be32(head + 4);
+    int R = be32(head + 8);
+    int C = be32(head + 12);
+    const int pixels = R * C;
+
+    uint8_t lhead[8];
+    if (std::fread(lhead, 1, 8, flbl) != 8) throw std::runtime_error("Loader: Header data read error");
+    if (be32(lhead) != 0x00000801) throw std::runtime_error("Loader: label dimension mismatch");
+    if (be32(lhead + 4) != uint32_t(N)) throw std::runtime_error("Loader: The sample sizes are not consistent.");  // 判断样本数是否一致
+
+    std::vector<uint8_t> buf(N * pixels);
+    if (std::fread(buf.data(), 1, buf.size(), fimg) != buf.size()) throw std::runtime_error("Loader: Data read error");
+    images.resize(buf.size());
+    for (size_t i = 0; i < buf.size(); ++i)
+        images[i] = static_cast<double>(buf[i]);
+
+    labels.resize(N);
+	std::vector<uint8_t> lblTemp(N);
+    if (std::fread(lblTemp.data(), 1, N, flbl) != size_t(N)) throw std::runtime_error("Loader: Label reading error");
+	labels.assign(lblTemp.begin(), lblTemp.end());
+
+	std::cout << "images.size(): " << images.size() << " labels.size(): " << labels.size() <<std::endl;
 }
 
 inline Loader::~Loader()
 {
-	if(file_.is_open())
-	{
-		file_.close();
-	}
+	std::fclose(fimg);
+    std::fclose(flbl);
 }
 
 inline bool Loader::load(Sample& s)
 {
-	std::string line;
+	if(pos >= labels.size()) return false;
 
-	if(!std::getline(file_, line))		// 判断是否到达文件末尾
-		return false;
-
-	std::istringstream iss(line);
-	double val;
-	std::size_t cnt = 0;
-
-	iss >> s.value;
-	while (iss >> val)
+	s.value = labels[pos];
+	s.img.clear();
+	s.img.reserve(784);
+	for (int i = 0; i < 784; i++)
 	{
-		s.img.push_back(val);
-		++cnt;
+		s.img.push_back(images[pos*784+i]);
 	}
-
-	if(cnt != 784)
-	{
-		std::cerr << "Line does not contain exactly 784 numbers!" << std::endl;	// 错误时会跳过此样本，所以无需异常处理
-		return false;
-	}
+	++pos;
 
 	return true;
 }

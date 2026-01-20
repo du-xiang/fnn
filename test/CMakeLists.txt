@@ -8,10 +8,7 @@ cmake_minimum_required(VERSION 3.10)
 project(loaderTest CXX)
 
 # 添加源文件
-add_executable( loaderTest 
-                loaderTest.cpp
-                ../Util.cpp
-              )
+add_executable( loaderTest loaderTest.cpp)
 
 # 指定包含目录，确保头文件可以被正确找到
-target_include_directories(loaderTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
+target_include_directories(loaderTest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
