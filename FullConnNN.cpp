@@ -140,12 +140,12 @@ bool FullConnNN::weight_load(const std::string &path)
 	return true;
 }
 
-int FullConnNN::forward(std::vector<double> in)
+int FullConnNN::forward(std::vector<double>::const_iterator headIn, std::vector<double>::const_iterator endIn)
 {
 	FullConnLayer* tmpLayer = &input;
 
 	// 输入层单独计算
-	if(tmpLayer->forward(in) != 1)
+	if(tmpLayer->forward(headIn, endIn) != 1)
 		return -1;
 
 	while (tmpLayer)
@@ -168,6 +168,7 @@ int FullConnNN::backward()
 	double learningStep = 0.001;		// 设置训练步长
 	unsigned int epoch = 1;				// 设置训练轮数
 	unsigned int countRight = 0;		// forward 正确个数统计
+	std::string ratesStr = "";			// 记录每1000个样本训练中的准确率
 
 	std::string outMessage = "本次训练：学习率="+std::to_string(learningStep)
 							+", epoch="+std::to_string(epoch);
@@ -175,29 +176,32 @@ int FullConnNN::backward()
 
 	for (unsigned int e = 1; e <= epoch; e++)
 	{
-        Sample sample;
 		Loader loader(imgPath, lblPath);
 		//ProgressBar bar(60000, 50, "progressing", "it");
         
 
 		int n = 0;
-		while(n != 60000)
+		while(n != loader.labels.size())
 		{
 			++n;
-        	while(!loader.load(sample)){};					// 直到读出有效样本
+        	loader.load();
 
-			if(this->forward(sample.img) == sample.value)	// 代入训练样本
-				countRight++;								// 得到中间值,并判断推理结果是否正确
+			if(this->forward(loader.winBeign, loader.winEnd) 
+							== loader.labels[loader.pos])	// 代入训练样本
+			{												// 得到中间值,并判断推理结果是否正确
+				countRight++;
+			}
 
 			if (n % 1000 == 0)								// 迭代一千次后输出
 			{												// 并将countRight清零
 				std::cout<< "No." << n << ": " << countRight/1000.0 <<std::endl;
+				ratesStr += ("\t" + std::to_string(countRight/1000.0));
 				countRight = 0;
 			}
 			
 
 			FullConnLayer* tmp = &output;
-			tmp->backward(sample.value, learningStep);		// 输出层单独计算
+			tmp->backward(loader.labels[loader.pos], learningStep);		// 输出层单独计算
 			tmp = tmp->prev;
 
 			while (tmp->prev)								// 退出条件：当前层为输入层
@@ -205,11 +209,11 @@ int FullConnNN::backward()
 				tmp->backward(learningStep);
 				tmp = tmp->prev;
 			}
-			sample.img.clear();								// 清空img，避免累积
 
 			//bar.update(n);
 		}
 	}
+	logger.log(logLevel::logINFO, __FILE__, __LINE__, "训练过程中准确率数据: " + ratesStr);
 
 	return 0;
 }
@@ -222,23 +226,22 @@ double FullConnNN::test()
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行测试集测试");
 
 	double ret = 0.0;
-	Sample sample;
 	Loader loader(imgPath, lblPath);
 
 	int exactNum = 0;
 	int allNum = 0;
 	int n = 0;
-	while(n != 10000)
+	while(n != loader.labels.size())
 	{
 		++n;
-		loader.load(sample);
+		loader.load();
 
-		if(this->forward(sample.img) == sample.value)
+		if(this->forward(loader.winBeign, loader.winEnd) 
+							== loader.labels[loader.pos])
 		{
 			exactNum++;
 		}
 		allNum++;
-		sample.img.clear();
 	}
 	ret = static_cast<double>(exactNum)/allNum;
 

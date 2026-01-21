@@ -67,13 +67,13 @@ int predictFNN(std::vector<double> img)
 		// 将此日志信息写入步骤从类成员函数中提取出来
 		logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行推理");
 
-		return example->forward(img);
+		return example->forward(img.cbegin(), img.cend());
 	}
 	else
 	{
 		logger.log(logLevel::logWARN, __FILE__, __LINE__, "未成功加载模型权重参数，准备重新训练");
         trainFNN();
-		return example->forward(img);
+		return example->forward(img.cbegin(), img.cend());
 	}
 
 	return 0;

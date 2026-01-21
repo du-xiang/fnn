@@ -8,12 +8,6 @@
 #include <string>
 #include <stdexcept>
 
-// 定义一个结构体用于存储数据集样本的值与内容
-struct Sample
-{
-	unsigned int value;
-	std::vector<double> img;
-};
 
 static inline uint32_t be32(const uint8_t* p)
 {
@@ -26,21 +20,24 @@ class Loader
 private:
 	FILE *fimg;
 	FILE *flbl;
-	int pos;
-	std::vector<double> images;
-	std::vector<unsigned int> labels;
 
 public:
+	int pos;
+	std::vector<double> images;
+	std::vector<double>::const_iterator winBeign;
+	std::vector<double>::const_iterator winEnd;
+	std::vector<unsigned int> labels;
+	
 	Loader() = delete;
 	explicit Loader(const char *&imgPath, const char *&lblPath);
 	~Loader();
-	bool load(Sample& s);
+	bool load();
 };
 
-inline Loader::Loader(const char *&imgPath, const char *&lblPath) : pos(0)
+inline Loader::Loader(const char *&imgPath, const char *&lblPath) : pos(-1)
 {
-	fimg = std::fopen("..\\datasets\\mnist\\train-images.idx3-ubyte", "rb");
-    flbl = std::fopen("..\\datasets\\mnist\\train-labels.idx1-ubyte", "rb");
+	fimg = std::fopen(imgPath, "rb");
+    flbl = std::fopen(lblPath, "rb");
     if (!fimg || !flbl) throw std::runtime_error("Loader: Cannot open file");
 
 	uint8_t head[16];
@@ -61,6 +58,9 @@ inline Loader::Loader(const char *&imgPath, const char *&lblPath) : pos(0)
     images.resize(buf.size());
     for (size_t i = 0; i < buf.size(); ++i)
         images[i] = static_cast<double>(buf[i]);
+	
+	winBeign = images.cbegin();
+	winEnd = images.cbegin(); 
 
     labels.resize(N);
 	std::vector<uint8_t> lblTemp(N);
@@ -76,19 +76,12 @@ inline Loader::~Loader()
     std::fclose(flbl);
 }
 
-inline bool Loader::load(Sample& s)
+inline bool Loader::load()
 {
-	if(pos >= labels.size()) return false;
+	if(++pos >= labels.size()) return false;
 
-	s.value = labels[pos];
-	s.img.clear();
-	s.img.reserve(784);
-	for (int i = 0; i < 784; i++)
-	{
-		s.img.push_back(images[pos*784+i]);
-	}
-	++pos;
-
+	winBeign = images.cbegin()+pos*784;
+	winEnd = images.cbegin()+(pos+1)*784;
 	return true;
 }
 

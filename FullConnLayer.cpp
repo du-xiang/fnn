@@ -65,13 +65,18 @@ int FullConnLayer::forward() {
 
 // 作用于神经网络输入层
 // 用于接收数据
-int FullConnLayer::forward(std::vector<double> in)
+int FullConnLayer::forward(std::vector<double>::const_iterator headIn, std::vector<double>::const_iterator endIn)
 {
 	Logger& logger = Logger::getInstance("..//log//log.txt");
 
-	if (layerOutput.size() == in.size())
+	if (layerOutput.size() == endIn-headIn)
 	{
-		layerOutput = in;
+		std::vector<double>::const_iterator tmpIn = headIn;
+		for(int i = 0; i < layerOutput.size(); i++)
+		{
+			layerOutput[i] = *tmpIn;
+			++tmpIn;
+		}
 	}
 	else
 	{
@@ -130,18 +135,4 @@ int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 	}
 
 	return 1;
-}
-
-void FullConnLayer::display() 
-{
-	std::cout << "No." << get_current_layer() << " layer num of node: " << get_node_num() << std::endl;			// 打印各层结点数量
-	std::cout << "Weight parameters between the previous layer: " << std::endl;
-	for (unsigned int i = 0; i < m_weight.size(); i++) {			// 打印各层间的权重参数
-		for (unsigned int j = 0; j < m_weight[i].size(); j++) {
-			std::cout << m_weight[i][j] << '\t';
-		}
-		std::cout << std::endl;
-	}
-
-	std::cout << std::endl;
 }

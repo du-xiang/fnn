@@ -17,7 +17,7 @@ public:
 	int weight_init();
 	bool weight_save(const std::string& path);
 	bool weight_load(const std::string& path);
-	int forward(std::vector<double> in);
+	int forward(std::vector<double>::const_iterator, std::vector<double>::const_iterator);
 	int backward();
 	double test();
 };
