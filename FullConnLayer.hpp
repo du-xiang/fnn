@@ -26,6 +26,9 @@ public:
 	FullConnLayer(unsigned int n, FullConnLayer* front_layer);	// 中间+输出层
 	//~FullConnLayer();
 
+	bool set_next_ptr(FullConnLayer* n);
+	const std::vector<double>& get_layerOutput() const;
+	const std::vector<double>& get_layerDelta() const;
 	int set_node_num(unsigned int n);
 	unsigned int get_node_num() const;
 	bool set_node_num_next(unsigned int n);
@@ -42,6 +45,17 @@ public:
 	int backward(unsigned int& valeOfimg, double& learningStep);
 };
 
+
+inline bool FullConnLayer::set_next_ptr(FullConnLayer* n) 
+{ 
+	next = n;
+	return true;
+}
+
+inline const std::vector<double>& FullConnLayer::get_layerOutput() const { return layerOutput;}
+
+inline const std::vector<double>& FullConnLayer::get_layerDelta() const { return layerDelta;}
+
 inline FullConnLayer::FullConnLayer(unsigned int n) : 
 	m_node_num(n), 
 	m_node_num_prev(0),
@@ -57,8 +71,6 @@ inline FullConnLayer::FullConnLayer(unsigned int n) :
 	layerDelta  = std::vector<double>(n, 0.0);
 }
 
-// 修改外部数据：front_layer
-// 获取外部数据：front_layer
 inline FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) : 
 	m_node_num(n) ,
 	m_node_num_prev(front_layer->get_node_num()),
@@ -68,7 +80,7 @@ inline FullConnLayer::FullConnLayer(unsigned int n, FullConnLayer* front_layer) 
 	//	两层之间链路连接
 	if (front_layer)
 	{
-		front_layer->next = this;
+		front_layer->set_next_ptr(this);
 		this->prev = front_layer;
 
 		front_layer->set_node_num_next(n);

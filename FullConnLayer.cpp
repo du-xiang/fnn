@@ -44,6 +44,8 @@ bool FullConnLayer::weight_init()
 int FullConnLayer::forward() {
 	double tmpOutput;			// 用于存储计算过程产生的中间值
 								// 使得计算部分代码更美观
+	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
+
 	if (this->prev)
 	{
 		for (unsigned int i = 0; i < m_node_num; i++) 
@@ -52,7 +54,7 @@ int FullConnLayer::forward() {
 			// 计算公式 w_nx_n +····+ w_3x_3 + w_2x_2 + w_1x_1 + w0
 			for (unsigned int j = 0; j < this->prev->get_node_num(); j++)
 			{
-				tmpOutput += m_weight[i][j+1] * this->prev->layerOutput[j];
+				tmpOutput += m_weight[i][j+1] * frontLayerOutput[j];
 			}
 
 			// 使用sigmoid 函数
@@ -89,12 +91,11 @@ int FullConnLayer::forward(std::vector<double>::const_iterator headIn, std::vect
 }
 
 // 对中间层进行反向传播
-// 获取外部数据：front_layer, next_layer
 int FullConnLayer::backward(double& learningStep)
 {
 	double deltaOfWeight = 0;
-	std::vector<double> frontLayerOutput = this->prev->layerOutput;
-	std::vector<double> nextLayerDelta   = this->next->layerDelta;
+	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
+	const std::vector<double>& nextLayerDelta   = this->next->get_layerDelta();
 	std::vector<std::vector<double>> nextLayerWeight  = this->next->get_weight();
 
 	for(unsigned int i = 0; i < layerOutput.size(); i++)
@@ -115,11 +116,10 @@ int FullConnLayer::backward(double& learningStep)
 }
 
 // 对输出层进行反向传播
-// 获取外部数据：front_layer, next_layer
 int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 {
 	double deltaOfWeight = 0;
-	std::vector<double> frontLayerOutput = this->prev->layerOutput;
+	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
 
 	for(unsigned int i = 0; i < layerOutput.size(); i++)
 	{
