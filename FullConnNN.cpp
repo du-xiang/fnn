@@ -29,7 +29,7 @@ bool FullConnNN::weight_save(const std::string& path)
 	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始保存模型权重");
 
-	std::vector<std::vector<std::vector<double>>> weightAll;
+	std::vector<std::vector<double>> weightAll;
 	FullConnLayer *tmpLayer = &input;
 
 	while(tmpLayer->next)
@@ -51,14 +51,9 @@ bool FullConnNN::weight_save(const std::string& path)
 
 	for (const auto& w : weightAll)
 	{
-        uint64_t rows = w.size();
-        std::fwrite(&rows, sizeof(rows), 1, f);
-        for (const auto& row : w) 
-		{
-            uint64_t cols = row.size();
-            std::fwrite(&cols, sizeof(cols), 1, f);
-            std::fwrite(row.data(), sizeof(double), cols, f);
-        }
+        uint64_t nums = w.size();
+        std::fwrite(&nums, sizeof(nums), 1, f);
+		std::fwrite(w.data(), sizeof(double), nums, f);
     }
     std::fclose(f);
 
@@ -72,7 +67,7 @@ bool FullConnNN::weight_load(const std::string &path)
 	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始加载模型权重");
 
-	std::vector<std::vector<std::vector<double>>> weightAll;
+	std::vector<std::vector<double>> weightAll;
 	FullConnLayer *tmpLayer = &input;
 
 	FILE *f = std::fopen(path.c_str(), "rb");
@@ -93,30 +88,20 @@ bool FullConnNN::weight_load(const std::string &path)
     weightAll.resize(n);
 
 	for (auto& w : weightAll) {
-        uint64_t rows;
-        if (std::fread(&rows, sizeof(rows), 1, f) != 1)
+        uint64_t nums;
+        if (std::fread(&nums, sizeof(nums), 1, f) != 1)
 		{
-            std::cerr << "weight loading: read rows failed" << std::endl;
+            std::cerr << "weight loading: read nums failed" << std::endl;
 			logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败: 参数n读取失败");
 			return false;
 		}
-        w.resize(rows);
-        for (auto& row : w) {
-            uint64_t cols;
-            if (std::fread(&cols, sizeof(cols), 1, f) != 1)
-			{
-                std::cerr << "weight loading: read cols failed" << std::endl;
-				logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败: 参数rows读取失败");
-				return false;
-			}
-            row.resize(cols);
-            if (std::fread(row.data(), sizeof(double), cols, f) != cols)
-			{
-                std::cerr << "weight loading: read data failed" << std::endl;
-				logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败：当前层参数读取失败");
-				return false;
-			}
-        }
+        w.resize(nums);
+		if (std::fread(w.data(), sizeof(double), nums, f) != nums)
+		{
+			std::cerr << "weight loading: read data failed" << std::endl;
+			logger.log(logLevel::logERROR, __FILE__, __LINE__, "权重参数加载失败：当前参数读取失败");
+			return false;
+		}
     }
     std::fclose(f);
 
@@ -199,7 +184,6 @@ int FullConnNN::backward()
 				countRight = 0;
 			}
 			
-
 			FullConnLayer* tmp = &output;
 			tmp->backward(loader.labels[loader.pos], learningStep);		// 输出层单独计算
 			tmp = tmp->prev;

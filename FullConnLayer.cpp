@@ -31,10 +31,7 @@ bool FullConnLayer::weight_init()
 	
 	for(int i = 0; i < m_weight.size(); i++)
 	{
-		for(int j = 0; j < m_weight[i].size(); j++)
-		{
-			m_weight[i][j] = dist(gen);
-		}
+		m_weight[i] = dist(gen);
 	}
 
 	return true;
@@ -50,11 +47,11 @@ int FullConnLayer::forward() {
 	{
 		for (unsigned int i = 0; i < m_node_num; i++) 
 		{
-			tmpOutput = m_weight[i][0];
+			tmpOutput = m_weight[i*m_node_num_prev];
 			// 计算公式 w_nx_n +····+ w_3x_3 + w_2x_2 + w_1x_1 + w0
-			for (unsigned int j = 0; j < this->prev->get_node_num(); j++)
+			for (unsigned int j = 0; j < m_node_num_prev; j++)
 			{
-				tmpOutput += m_weight[i][j+1] * frontLayerOutput[j];
+				tmpOutput += m_weight[i*(m_node_num_prev+1)+j+1] * frontLayerOutput[j];
 			}
 
 			// 使用sigmoid 函数
@@ -96,21 +93,21 @@ int FullConnLayer::backward(double& learningStep)
 	double deltaOfWeight = 0;
 	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
 	const std::vector<double>& nextLayerDelta   = this->next->get_layerDelta();
-	std::vector<std::vector<double>> nextLayerWeight  = this->next->get_weight();
+	std::vector<double> nextLayerWeight  = this->next->get_weight();
 
 	for(unsigned int i = 0; i < layerOutput.size(); i++)
 	{
 		double sumOfError = 0.0;
 		for(unsigned int j = 0; j < m_node_num_next; j++)
 		{
-			sumOfError += nextLayerDelta[j]*nextLayerWeight[j][i+1];
+			sumOfError += nextLayerDelta[j]*nextLayerWeight[j*(m_node_num+1)+i+1];
 		}
 		deltaOfWeight = layerOutput[i]*(1-layerOutput[i])*sumOfError;
 		for(unsigned int j = 0; j < m_node_num_prev; j++)
 		{
-			m_weight[i][j] += learningStep*deltaOfWeight*frontLayerOutput[j];
+			m_weight[i*(m_node_num_prev+1)+j] += learningStep*deltaOfWeight*frontLayerOutput[j];
 		}
-		m_weight[i][m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
+		m_weight[i*(m_node_num_prev+1)+m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
 	}
 	return 1;
 }
@@ -129,9 +126,9 @@ int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 
 		for(unsigned int j = 0; j < m_node_num_prev; j++)
 		{
-			m_weight[i][j] += learningStep*deltaOfWeight*frontLayerOutput[j];
+			m_weight[i*(m_node_num_prev+1)+j] += learningStep*deltaOfWeight*frontLayerOutput[j];
 		}
-		m_weight[i][m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
+		m_weight[i*(m_node_num_prev+1)+m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
 	}
 
 	return 1;
