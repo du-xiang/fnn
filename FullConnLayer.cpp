@@ -5,6 +5,8 @@
 #include "FullConnLayer.hpp"
 #include "Logger.hpp"
 
+extern Logger& logger;
+
 
 int FullConnLayer::get_max_output() const
 {
@@ -37,7 +39,7 @@ bool FullConnLayer::weight_init()
 	return true;
 }
 
-int FullConnLayer::forward() {
+bool FullConnLayer::forward() {
 	double tmpOutput;			// 用于存储计算过程产生的中间值
 								// 使得计算部分代码更美观
 	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
@@ -62,11 +64,25 @@ int FullConnLayer::forward() {
 }
 
 // 作用于神经网络输入层
-// 用于接收数据
-int FullConnLayer::forward(std::vector<double>::const_iterator headIn, std::vector<double>::const_iterator endIn)
+bool FullConnLayer::forward(std::vector<double>& imgIn)
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
+	if(imgIn.size() == layerOutput.size())
+	{
+		layerOutput = std::move(imgIn);
+	}
+	else
+	{
+		std::cerr << "Error: The input data does not match the number of nodes in the input layer" << std::endl;
+		logger.log(logLevel::logERROR, __FILE__, __LINE__, "输入数据与输入层结点数量大小不匹配");
+		return false;
+	}
+	return true;
+}
 
+// 作用于神经网络输入层
+// 用于接收数据
+bool FullConnLayer::forward(std::vector<double>::const_iterator headIn, std::vector<double>::const_iterator endIn)
+{
 	if (layerOutput.size() == endIn-headIn)
 	{
 		std::vector<double>::const_iterator tmpIn = headIn;
@@ -80,14 +96,14 @@ int FullConnLayer::forward(std::vector<double>::const_iterator headIn, std::vect
 	{
 		std::cerr << "Error: The input data does not match the number of nodes in the input layer" << std::endl;
 		logger.log(logLevel::logERROR, __FILE__, __LINE__, "输入数据与输入层结点数量大小不匹配");
-		return -1;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 // 对中间层进行反向传播
-int FullConnLayer::backward(double& learningStep)
+bool FullConnLayer::backward(double& learningStep)
 {
 	double deltaOfWeight = 0;
 	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
@@ -108,11 +124,11 @@ int FullConnLayer::backward(double& learningStep)
 		}
 		m_weight[i*(m_node_num_prev+1)+m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
 	}
-	return 1;
+	return true;
 }
 
 // 对输出层进行反向传播
-int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
+bool FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 {
 	double deltaOfWeight = 0;
 	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
@@ -130,5 +146,5 @@ int FullConnLayer::backward(unsigned int& valueOfImg, double& learningStep)
 		m_weight[i*(m_node_num_prev+1)+m_node_num_prev] += learningStep*deltaOfWeight; // 偏置值单独计算
 	}
 
-	return 1;
+	return true;
 }

@@ -40,10 +40,11 @@ public:
 	bool set_weight(std::vector<double> &tmpWeight);
 	int get_max_output() const;
 	bool weight_init();
-	int forward();
-	int forward(std::vector<double>::const_iterator, std::vector<double>::const_iterator);
-	int backward(double& learningStep);
-	int backward(unsigned int& valeOfimg, double& learningStep);
+	bool forward();
+	bool forward(std::vector<double>& imgIn);
+	bool forward(std::vector<double>::const_iterator, std::vector<double>::const_iterator);
+	bool backward(double& learningStep);
+	bool backward(unsigned int& valeOfimg, double& learningStep);
 };
 
 
