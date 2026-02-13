@@ -37,7 +37,6 @@ bool FullConnLayer::weight_init()
 	return true;
 }
 
-// 获取外部数据：front_layer
 int FullConnLayer::forward() {
 	double tmpOutput;			// 用于存储计算过程产生的中间值
 								// 使得计算部分代码更美观
@@ -93,7 +92,7 @@ int FullConnLayer::backward(double& learningStep)
 	double deltaOfWeight = 0;
 	const std::vector<double>& frontLayerOutput = this->prev->get_layerOutput();
 	const std::vector<double>& nextLayerDelta   = this->next->get_layerDelta();
-	std::vector<double> nextLayerWeight  = this->next->get_weight();
+	const std::vector<double>& nextLayerWeight  = this->next->get_weight();
 
 	for(unsigned int i = 0; i < layerOutput.size(); i++)
 	{
