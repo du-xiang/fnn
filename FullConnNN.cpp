@@ -3,9 +3,10 @@
 #include "Util.hpp"
 #include "Logger.hpp"
 
-int FullConnNN::weight_init()
+extern Logger& logger;
+
+bool FullConnNN::weight_init()
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行模型权重初始化");
 
 	FullConnLayer* tmp_Layer = &input;
@@ -19,14 +20,13 @@ int FullConnNN::weight_init()
 
 	std::cout << "The network initialization is complete" << std::endl;
 
-	return 1;
+	return true;
 }
 
 // 存储网络权重参数
 // 由于输入层直接接受传入参数，直接从第二层开始存储
 bool FullConnNN::weight_save(const std::string& path)
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始保存模型权重");
 
 	std::vector<std::vector<double>> weightAll;
@@ -64,7 +64,6 @@ bool FullConnNN::weight_save(const std::string& path)
 
 bool FullConnNN::weight_load(const std::string &path)
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始加载模型权重");
 
 	std::vector<std::vector<double>> weightAll;
@@ -142,9 +141,8 @@ int FullConnNN::forward(std::vector<double>::const_iterator headIn, std::vector<
 	return output.get_max_output();
 }
 
-int FullConnNN::backward() 
+bool FullConnNN::backward() 
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
 	const char *imgPath = "..\\datasets\\mnist\\train-images.idx3-ubyte";
 	const char *lblPath = "..\\datasets\\mnist\\train-labels.idx1-ubyte";
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行反向传播训练");
@@ -199,12 +197,11 @@ int FullConnNN::backward()
 	}
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "训练过程中准确率数据: " + ratesStr);
 
-	return 0;
+	return true;
 }
 
 double FullConnNN::test()
 {
-	Logger& logger = Logger::getInstance("..//log//log.txt");
 	const char *imgPath = "..//datasets//mnist//t10k-images.idx3-ubyte";
 	const char *lblPath = "..//datasets//mnist//t10k-labels.idx1-ubyte";
 	logger.log(logLevel::logINFO, __FILE__, __LINE__, "开始进行测试集测试");

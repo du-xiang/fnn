@@ -19,17 +19,19 @@
 #define USE_PRVE_INIT_WEIGHT true
 
 // 设置全局变量
+std::string weightPath = "..//weight//weight.w";
+std::string weightPathFirst = "..//weight//weight1.w";
 Logger& logger = Logger::getInstance("..//log//log.txt");
 std::shared_ptr<FullConnNN> example(new FullConnNN());
-std::string weightPath = "..//weight//weight.w";
+
 
 bool trainFNN()
 {
     Timer t;
     
     if(USE_PRVE_INIT_WEIGHT)
-    {
-        example->weight_load("..//weight//weight1.w");
+    {   // 使用上一次的初始化权重参数
+        example->weight_load(weightPathFirst);
         logger.log(logLevel::logINFO, __FILE__, __LINE__, "模型使用上一次的初始化权重");
     }
     else
@@ -37,7 +39,7 @@ bool trainFNN()
     example->weight_init();
         logger.log(logLevel::logINFO, __FILE__, __LINE__, "模型权重参数初始化成功");
 
-        example->weight_save("..//weight//weight1.w");
+        example->weight_save(weightPathFirst);
         logger.log(logLevel::logINFO, __FILE__, __LINE__, "成功保持初始化的模型权重参数");
     }
 
